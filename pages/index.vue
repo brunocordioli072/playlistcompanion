@@ -2,34 +2,32 @@
   <div class="container">
     <div>
       <a-button type="primary" @click="login">login</a-button>
+      <a-button type="primary" @click="getArtists">artists</a-button>
+      <a-button type="primary" @click="getMe">me</a-button>
+      <a-button type="primary" @click="createPlaylist">create playlist</a-button>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  mounted() {
-    this.setToken();
-    console.log(localStorage.getItem("access_token"))
-    console.log(localStorage.getItem("refresh_token"))
-  },
   methods: {
     login() {
-      window.location.replace("http://localhost:4000/api/spotify/login");
+      window.location.replace("http://localhost:4000/auth/spotify/login");
     },
-    setToken() {
-      if (this.$route.query) {
-        let access_token = this.$route.query.access_token;
-        let refresh_token = this.$route.query.refresh_token;
-        if (access_token) localStorage.setItem("access_token", access_token);
-        if (refresh_token) localStorage.setItem("refresh_token", refresh_token);
-      }
+    async getArtists() {
+      let res = await this.$axios.$get("/findByName/bruno");
+      let artists = res.body.artists;
+      console.log(artists)
     },
-  },
-  watch: {
-    "$route.query": function () {
-      this.setToken();
+    async getMe() {
+      let res = await this.$axios.$get("/me");
+      console.log(res.body)
     },
+    async createPlaylist() {
+      let res = await this.$axios.$post("/playlist");
+      console.log(res.body)
+    }
   },
 };
 </script>

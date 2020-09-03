@@ -1,20 +1,40 @@
 <template>
   <div>
+    <c-header></c-header>
     <Nuxt />
   </div>
 </template>
 
+<script>
+export default {
+  mounted() {
+    this.setToken();
+    console.log(localStorage.getItem("access_token"));
+    console.log(localStorage.getItem("refresh_token"));
+    this.$axios.setToken(localStorage.getItem("access_token"));
+  },
+  methods: {
+    setToken() {
+      if (this.$route.query) {
+        let access_token = this.$route.query.access_token;
+        let refresh_token = this.$route.query.refresh_token;
+        if (access_token) localStorage.setItem("access_token", access_token);
+        if (refresh_token) localStorage.setItem("refresh_token", refresh_token);
+      }
+    },
+  },
+  watch: {
+    "$route.query": function () {
+      this.setToken();
+    },
+  },
+};
+</script>
+
 <style>
 html {
-  font-family:
-    'Source Sans Pro',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    sans-serif;
+  font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 16px;
   word-spacing: 1px;
   -ms-text-size-adjust: 100%;
