@@ -10,11 +10,11 @@
       :default-selected-keys="['4']"
       :style="{ lineHeight: '64px' }"
     >
-      <a-menu-item>explore</a-menu-item>
+      <a-menu-item @click="$router.push('/explore')">explore</a-menu-item>
       <a-menu-item>search</a-menu-item>
     </a-menu>
     <v-spacer></v-spacer>
-    <a-button  type="primary" id="login">login</a-button>
+    <a-button type="primary" id="login">login</a-button>
   </a-layout-header>
 </template>
 
