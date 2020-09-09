@@ -1,7 +1,9 @@
 <template>
   <div>
     <c-header></c-header>
-    <Nuxt />
+    <div class="content">
+      <Nuxt />
+    </div>
   </div>
 </template>
 
@@ -32,6 +34,14 @@ export default {
 </script>
 
 <style>
+.content {
+  margin-top: 2vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
 html {
   font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, "Helvetica Neue", Arial, sans-serif;

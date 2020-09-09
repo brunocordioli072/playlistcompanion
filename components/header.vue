@@ -14,12 +14,18 @@
       <a-menu-item>search</a-menu-item>
     </a-menu>
     <v-spacer></v-spacer>
-    <a-button type="primary" id="login">login</a-button>
+    <a-button type="primary" id="login" @click="login">login</a-button>
   </a-layout-header>
 </template>
 
 <script>
-export default {};
+export default {
+  methods: {
+    login() {
+      window.location.replace("http://localhost:4000/auth/spotify/login");
+    },
+  },
+};
 </script>
 
 <style>

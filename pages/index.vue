@@ -12,10 +12,8 @@
 <script>
 export default {
   methods: {
-    login() {
-      window.location.replace("http://localhost:4000/auth/spotify/login");
-    },
     async getArtists() {
+      console.log('aaa')
       let res = await this.$axios.$get("/findByName/bruno");
       let artists = res.body.artists;
       console.log(artists)
@@ -35,7 +33,7 @@ export default {
 <style>
 .container {
   margin: 0 auto;
-  min-height: 60vh;
+  min-height: 30vh;
   display: flex;
   justify-content: center;
   align-items: center;
