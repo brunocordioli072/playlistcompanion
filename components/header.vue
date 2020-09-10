@@ -11,7 +11,6 @@
       :style="{ lineHeight: '64px' }"
     >
       <a-menu-item @click="$router.push('/explore')">explore</a-menu-item>
-      <a-menu-item>search</a-menu-item>
     </a-menu>
     <v-spacer></v-spacer>
     <a-button type="primary" id="login" @click="login">login</a-button>
