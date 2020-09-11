@@ -8,26 +8,44 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
-  mounted() {
+  async mounted() {
     this.setToken();
-    console.log(localStorage.getItem("access_token"));
-    console.log(localStorage.getItem("refresh_token"));
     this.$axios.setToken(localStorage.getItem("access_token"));
+    let expires_in = localStorage.getItem("expires_in");
   },
   methods: {
     setToken() {
       if (this.$route.query) {
         let access_token = this.$route.query.access_token;
+        let expires_in = this.$route.query.expires_in;
         let refresh_token = this.$route.query.refresh_token;
         if (access_token) localStorage.setItem("access_token", access_token);
         if (refresh_token) localStorage.setItem("refresh_token", refresh_token);
+        if (expires_in)
+          localStorage.setItem("expires_in", parseInt(expires_in) * 1000 + +moment());
+        this.$router.push("")
       }
+    },
+  },
+  computed: {
+    expired_token() {
+      let expires_in = localStorage.getItem("expires_in");
+      return parseInt(expires_in) <= +moment();
     },
   },
   watch: {
     "$route.query": function () {
       this.setToken();
+    },
+    expired_token: async function () {
+      if (this.expired_token) {
+        let res = await this.$axios.$get("/auth/spotify/refresh_token");
+        localStorage.setItem("access_token", res.access_token);
+        localStorage.setItem("expires_in", 3600 * 1000 + +moment());
+        this.$axios.setToken(localStorage.getItem("access_token"));
+      }
     },
   },
 };

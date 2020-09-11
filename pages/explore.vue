@@ -4,12 +4,13 @@
       <a-select
         label-in-value
         show-search
-        :value="value"
+        :value="search"
         placeholder="Search artists"
         style="width: 50vw"
         :filter-option="false"
         :not-found-content="fetching ? undefined : null"
         @search="fetchArtists"
+        @click="search = null"
       >
         <a-spin v-if="fetching" slot="notFoundContent" size="small" />
         <a-select-option
@@ -54,8 +55,34 @@
                 >Followers: {{ numberToLocaleFormat(item.followers.total) }}</a-tag>
                 <a-tag class="tag" :color="'blue'">Popularity: {{ item.popularity }}</a-tag>
               </div>
-              <a-avatar :size="64" style="margin-left: 20px" slot="avatar" :src="getImageFromArtist(item)" />
+              <a-avatar
+                :size="64"
+                style="margin-left: 20px"
+                slot="avatar"
+                :src="getImageFromArtist(item)"
+              />
             </a-list-item-meta>
+            <div style="margin: 5px" slot="actions">
+              <a @click="addSelectedArtists(item)">
+                Add to
+                <b>playlist</b>
+              </a>
+              <a-divider type="vertical" />
+              <a @click="updateSearchedArtist(item)">Search</a>
+              <a-divider type="vertical" />
+              <a-icon
+                v-show="!item.playing"
+                style="color: grey"
+                type="play-circle"
+                @click="playTopTrackByArtist(item)"
+              />
+              <a-icon
+                v-show="item.playing"
+                style="color: green"
+                type="play-circle"
+                @click="stopPlayer(), $set(item, 'playing', false)"
+              />
+            </div>
             <!-- <a-button
               slot="actions"
               size="small"
@@ -76,7 +103,7 @@
           :data-source="relatedArtists"
         >
           <span slot="images" slot-scope="images, item">
-            <a-avatar  slot="avatar" :src="getImageFromArtist(item)" />
+            <a-avatar slot="avatar" :src="getImageFromArtist(item)" />
           </span>
           <span slot="genres" slot-scope="genres">
             <a-tag
@@ -92,6 +119,19 @@
             </a>
             <a-divider type="vertical" />
             <a @click="updateSearchedArtist(item)">Search</a>
+            <a-divider type="vertical" />
+            <a-icon
+              v-show="!item.playing"
+              style="color: grey"
+              type="play-circle"
+              @click="playTopTrackByArtist(item)"
+            />
+            <a-icon
+              v-show="item.playing"
+              style="color: green"
+              type="play-circle"
+              @click="stopPlayer(), $set(item, 'playing', false)"
+            />
             <!-- <a-divider type="vertical" />
           <a class="ant-dropdown-link">
             More actions
@@ -107,11 +147,16 @@
       >
         <a-space direction="horizontal" align="end">
           <a-button type="dashed">{{ selectedArtists.length }}</a-button>
+          <a-input v-model="playlistName" placeholder="Name of your playlist" />
           <a-popover title="The Playlist Maker">
             <template slot="content">
               <p>Click and create a playlist with the artists selected!</p>
             </template>
-            <a-button type="primary">Create Playlist</a-button>
+            <a-button
+              type="primary"
+              :disabled="!playlistName"
+              @click="createPlaylist"
+            >Create Playlist</a-button>
           </a-popover>
         </a-space>
       </div>
@@ -119,11 +164,11 @@
       <a-timeline v-show="selectedArtists.length > 0">
         <a-space align="center">
           <a-list
-            style="width: 81vw"
+            style="width: 81vw;"
             :grid="{ gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 5, xxl: 3 }"
             :data-source="selectedArtists"
           >
-            <a-list-item slot="renderItem" slot-scope="item, index">
+            <a-list-item slot="renderItem" slot-scope="item">
               <a-card>
                 <div slot="title">
                   <a-space direction="vertical">
@@ -142,7 +187,7 @@
                   <div>
                     <a-button size="small" type="primary" @click="updateSearchedArtist(item)">Search</a-button>
                     <a-button
-                    style="margin: 5px" 
+                      style="margin: 5px"
                       size="small"
                       type="dashed"
                       :color="'red'"
@@ -156,6 +201,11 @@
         </a-space>
       </a-timeline>
     </a-space>
+    <vue-plyr ref="plyr" style="display: none; visibility: hidden;">
+      <audio>
+        <source type="audio/mp3" />
+      </audio>
+    </vue-plyr>
   </div>
 </template>
 
@@ -163,6 +213,8 @@
 export default {
   data() {
     return {
+      playlistName: null,
+      search: null,
       search: [],
       fetching: false,
       artists: [],
@@ -201,9 +253,35 @@ export default {
   },
 
   methods: {
+    async createPlaylist() {
+      let res = await this.$axios.$post(
+        `/api/spotify/playlist/${this.playlistName}`
+      );
+      if (res) {
+        this.$axios.$post(`/api/spotify/playlist/${res.body.id}/tracks`, {
+          artistIds: this.selectedArtists.map((a) => a.id),
+        });
+      }
+    },
+    startPlayer() {
+      this.$refs.plyr.player.play();
+    },
+    stopPlayer() {
+      this.$refs.plyr.player.stop();
+    },
+    async playTopTrackByArtist(item) {
+      this.$set(item, "playing", true);
+      let res = await this.$axios.$get(`/api/spotify/topTrack/${item.id}`);
+      let tracks = res.body.tracks;
+      this.$refs.plyr.player.source = {
+        type: "audio",
+        sources: [{ src: tracks[0].preview_url, type: "audio/mp3" }],
+      };
+      this.$refs.plyr.player.play();
+    },
     async fetchArtists(value) {
       if (value) {
-        let res = await this.$axios.$get(`/spotify/findByName/${value}`);
+        let res = await this.$axios.$get(`/api/spotify/findByName/${value}`);
         let artists = res.body.artists.items;
         this.artists = artists;
       }
@@ -211,7 +289,9 @@ export default {
     async fetchRelatedArtists() {
       if (this.searchedArtists.length > 0) {
         let artistId = this.searchedArtists[0].id;
-        let res = await this.$axios.$get(`/spotify/relatedArtists/${artistId}`);
+        let res = await this.$axios.$get(
+          `/api/spotify/relatedArtists/${artistId}`
+        );
         let relatedArtists = res.body.artists;
         this.relatedArtists = relatedArtists;
       }

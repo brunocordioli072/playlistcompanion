@@ -54,6 +54,6 @@ export default {
    */
   build: {},
   axios: {
-    baseURL: "http://localhost:4000/api"
+    baseURL: "http://localhost:4000"
   }
 };

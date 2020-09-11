@@ -12,7 +12,9 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.12.2",
     "ant-design-vue": "^1.6.4",
+    "moment": "^2.27.0",
     "nuxt": "^2.14.0",
+    "vue-plyr": "^6.0.4",
     "vue-simple-tree": "^2.3.2",
     "vue-tree-chart": "^1.2.9",
     "vued3tree": "^5.1.0"
