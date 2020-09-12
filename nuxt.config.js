@@ -59,6 +59,6 @@ export default {
    */
   build: {},
   axios: {
-    baseURL: development ? "http://localhost:4000" : "http://playlistcompanion.herokuapp.com"
+    baseURL: development ? "http://localhost:4000" : "https://playlistcompanion.herokuapp.com"
   }
 };
