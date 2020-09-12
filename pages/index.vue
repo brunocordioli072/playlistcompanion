@@ -1,31 +1,34 @@
 <template>
   <div class="container">
-    <div>
-      <a-button type="primary" @click="login">login</a-button>
-      <a-button type="primary" @click="getArtists">artists</a-button>
-      <a-button type="primary" @click="getMe">me</a-button>
-      <a-button type="primary" @click="createPlaylist">create playlist</a-button>
-    </div>
+    <a-space direction="vertical">
+      <div style="max-width: 800px; width: 80vw; font-size: 16px">
+        <h2>Do your own playlist!</h2>
+        <p>
+          For people who have
+          <a target="_blank" href="https://www.spotify.com/">spotify</a>,
+          <b>PlaylistCompanion</b> is your
+          best friend when the subject is music.
+          <b>
+            It helps you see all your
+            favorite musicians and see all the musicians that are related to them!
+          </b>
+          And based on your choices it creates a playlist with the musics the musicians
+          you chose.
+          <a>Its pretty awesome!</a> You just have to click on the login button
+          right above login with your spotify account and give it a try!
+        </p>
+        <a-button size="large" type="primary" id="login" @click="login">login</a-button>
+      </div>
+    </a-space>
   </div>
 </template>
 
 <script>
 export default {
   methods: {
-    async getArtists() {
-      console.log('aaa')
-      let res = await this.$axios.$get("/findByName/bruno");
-      let artists = res.body.artists;
-      console.log(artists)
+    login() {
+      window.location.replace("http://localhost:4000/auth/spotify/login");
     },
-    async getMe() {
-      let res = await this.$axios.$get("/me");
-      console.log(res.body)
-    },
-    async createPlaylist() {
-      let res = await this.$axios.$post("/playlist");
-      console.log(res.body)
-    }
   },
 };
 </script>
@@ -33,6 +36,7 @@ export default {
 <style>
 .container {
   margin: 0 auto;
+  height: 300px;
   min-height: 30vh;
   display: flex;
   justify-content: center;

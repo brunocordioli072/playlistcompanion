@@ -1,8 +1,10 @@
 <template>
   <a-layout-header>
     <div class="logo">
-      <span id="playlist">Playlist</span>
-      <span id="companion">Companion</span>
+      <a-button @click="$router.push('/')" type="link" ghost>
+        <span id="playlist">Playlist</span>
+        <span id="companion">Companion</span>
+      </a-button>
     </div>
     <a-menu
       theme="dark"
@@ -10,18 +12,19 @@
       :default-selected-keys="['4']"
       :style="{ lineHeight: '64px' }"
     >
-      <a-menu-item @click="$router.push('/explore')">explore</a-menu-item>
+      <a-menu-item v-show="access_token" @click="$router.push('/explore')">explore</a-menu-item>
     </a-menu>
-    <v-spacer></v-spacer>
-    <a-button type="primary" id="login" @click="login">login</a-button>
   </a-layout-header>
 </template>
 
 <script>
 export default {
-  methods: {
-    login() {
-      window.location.replace("http://localhost:4000/auth/spotify/login");
+  mounted() {
+    console.log(this.access_token);
+  },
+  computed: {
+    access_token() {
+      return localStorage.getItem("access_token");
     },
   },
 };
@@ -37,11 +40,6 @@ export default {
   margin: 0px 24px 16px 0;
   float: left;
 }
-#login {
-  position: relative;
-  float: right;
-  margin: -49px 24px 16px 0;
-}
 #playlist {
   font-size: 20px;
   font-weight: 200;
@@ -49,7 +47,7 @@ export default {
 }
 #companion {
   font-size: 20px;
-  margin: 0 0 0 -5px;
+  margin: 0 0 0 0px;
   font-weight: 600;
   font-family: "Kanit", sans-serif;
 }

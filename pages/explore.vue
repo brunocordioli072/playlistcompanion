@@ -6,13 +6,13 @@
         show-search
         :value="search"
         placeholder="Search artists"
-        style="width: 50vw"
+        style="width: 50vw; min-width: 300px"
         :filter-option="false"
-        :not-found-content="fetching ? undefined : null"
+        :not-found-content="fetchingArtists ? undefined : null"
         @search="fetchArtists"
         @click="search = null"
       >
-        <a-spin v-if="fetching" slot="notFoundContent" size="small" />
+        <a-spin v-if="fetchingArtists" slot="notFoundContent" size="small" />
         <a-select-option
           v-for="(item, index) in artists"
           :key="index"
@@ -32,7 +32,7 @@
       <div style="text-align: left !important; max-height: 400px;">
         <a-list
           style="width: 81vw"
-          v-show="searchedArtists.length > 0"
+          v-if="searchedArtists.length > 0"
           item-layout="horizontal"
           :data-source="searchedArtists"
         >
@@ -40,7 +40,7 @@
             <a-list-item-meta>
               <div slot="title">
                 <b>Selected:</b>
-                <a href="https://www.antdv.com/">{{ item.name }}</a>
+                <a target="_blank" :href="item.external_urls.spotify">{{ item.name }}</a>
               </div>
               <div slot="description">
                 <a-tag
@@ -94,10 +94,19 @@
         </a-list>
       </div>
 
-      <a-space align="center">
+      <a-space v-if="relatedArtists.length > 0" direction="vertical" align="center">
+        <div style="margin: 10px">
+          <span style="text-align: left">
+            <a-icon type="arrow-down" />&nbsp;Artists related to
+            <a
+              target="_blank"
+              :href="this.searchedArtists[0].external_urls.spotify"
+            >{{ this.searchedArtists[0].name}}</a>
+            <a-icon type="arrow-down" />
+          </span>
+        </div>
         <a-table
           style="width: 81vw"
-          v-show="relatedArtists.length > 0"
           :columns="relatedArtistsColumns"
           :pagination="{ pageSize: 5 }"
           :data-source="relatedArtists"
@@ -146,61 +155,83 @@
         style="margin-right: 20px; text-align: right !important"
       >
         <a-space direction="horizontal" align="end">
-          <a-button type="dashed">{{ selectedArtists.length }}</a-button>
-          <a-input v-model="playlistName" placeholder="Name of your playlist" />
+          <a-popover title="Number of artists seleted">
+            <a-button type="dashed">{{ selectedArtists.length }}</a-button>
+          </a-popover>
           <a-popover title="The Playlist Maker">
             <template slot="content">
               <p>Click and create a playlist with the artists selected!</p>
             </template>
-            <a-button
-              type="primary"
-              :disabled="!playlistName"
-              @click="createPlaylist"
-            >Create Playlist</a-button>
+            <a-button type="primary" @click="modalVisible = true;">Create Playlist</a-button>
           </a-popover>
         </a-space>
       </div>
-
-      <a-timeline v-show="selectedArtists.length > 0">
-        <a-space align="center">
-          <a-list
-            style="width: 81vw;"
-            :grid="{ gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 5, xxl: 3 }"
-            :data-source="selectedArtists"
-          >
-            <a-list-item slot="renderItem" slot-scope="item">
-              <a-card>
-                <div slot="title">
+      <div v-show="selectedArtists.length > 0">
+        <span style="text-align: left">
+          <a-icon type="arrow-down" />&nbsp;Artists selected to the playlist
+          <a-icon type="arrow-down" />
+        </span>
+        <a-timeline>
+          <a-space align="center">
+            <a-list
+              style="width: 81vw;"
+              :grid="{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 3, xl: 3, xxl: 3 }"
+              :data-source="selectedArtists"
+            >
+              <a-list-item slot="renderItem" slot-scope="item">
+                <a-card>
+                  <div slot="title">
+                    <a-space direction="vertical">
+                      <a-avatar slot="avatar" :src="getImageFromArtist(item)" />
+                      <div>{{item.name}}</div>
+                    </a-space>
+                  </div>
                   <a-space direction="vertical">
-                    <a-avatar slot="avatar" :src="getImageFromArtist(item)" />
-                    <div>{{item.name}}</div>
+                    <div>
+                      <a-tag
+                        class="tag"
+                        :color="'purple'"
+                      >Followers: {{ numberToLocaleFormat(item.followers.total) }}</a-tag>
+                      <a-tag class="tag" :color="'blue'">Popularity: {{ item.popularity }}</a-tag>
+                    </div>
+                    <div>
+                      <a-button
+                        size="small"
+                        type="primary"
+                        @click="updateSearchedArtist(item)"
+                      >Search</a-button>
+                      <a-button
+                        style="margin: 5px"
+                        size="small"
+                        type="dashed"
+                        :color="'red'"
+                        @click="removeSelectedArtists(item)"
+                      >Remove</a-button>
+                    </div>
                   </a-space>
-                </div>
-                <a-space direction="vertical">
-                  <div>
-                    <a-tag
-                      class="tag"
-                      :color="'purple'"
-                    >Followers: {{ numberToLocaleFormat(item.followers.total) }}</a-tag>
-                    <a-tag class="tag" :color="'blue'">Popularity: {{ item.popularity }}</a-tag>
-                  </div>
-                  <div>
-                    <a-button size="small" type="primary" @click="updateSearchedArtist(item)">Search</a-button>
-                    <a-button
-                      style="margin: 5px"
-                      size="small"
-                      type="dashed"
-                      :color="'red'"
-                      @click="removeSelectedArtists(item)"
-                    >Remove</a-button>
-                  </div>
-                </a-space>
-              </a-card>
-            </a-list-item>
-          </a-list>
-        </a-space>
-      </a-timeline>
+                </a-card>
+              </a-list-item>
+            </a-list>
+          </a-space>
+        </a-timeline>
+      </div>
     </a-space>
+    <a-modal
+      title="The Playlist Maker"
+      :visible="modalVisible"
+      okText="Create"
+      :confirm-loading="creatingPlaylist"
+      @ok="createPlaylist"
+      @cancel="modalVisible =false"
+    >
+      <a-input v-model="playlistName" placeholder="Name of your playlist" />
+      <p style="text-align: justify">
+        This playlist will be added to
+        <b>your spotify account</b> with the
+        <b>10</b> top tracks of
+        <b>each artist</b> you selected!
+      </p>
+    </a-modal>
     <vue-plyr ref="plyr" style="display: none; visibility: hidden;">
       <audio>
         <source type="audio/mp3" />
@@ -213,10 +244,11 @@
 export default {
   data() {
     return {
+      modalVisible: false,
       playlistName: null,
-      search: null,
       search: [],
-      fetching: false,
+      creatingPlaylist: false,
+      fetchingArtists: false,
       artists: [],
       searchedArtists: [],
       selectedArtists: [],
@@ -253,14 +285,36 @@ export default {
   },
 
   methods: {
+    clearView() {
+      this.creatingPlaylist = false;
+      this.modalVisible = false;
+      this.playlistName = null;
+      this.search = [];
+      this.artists = [];
+      this.searchedArtists = [];
+      this.selectedArtists = [];
+      this.relatedArtists = [];
+    },
     async createPlaylist() {
+      this.creatingPlaylist = true;
       let res = await this.$axios.$post(
         `/api/spotify/playlist/${this.playlistName}`
       );
       if (res) {
-        this.$axios.$post(`/api/spotify/playlist/${res.body.id}/tracks`, {
-          artistIds: this.selectedArtists.map((a) => a.id),
-        });
+        let res2 = await this.$axios.$post(
+          `/api/spotify/playlist/${res.body.id}/tracks`,
+          {
+            artistIds: this.selectedArtists.map((a) => a.id),
+          }
+        );
+        if (res2) {
+          this.$notification.open({
+            message: "Playlist created!!!",
+            description: `Playlist added to your spotify with the name ${this.playlistName}`,
+            icon: <a-icon type="smile" style="color: #108ee9" />,
+          });
+          this.clearView();
+        }
       }
     },
     startPlayer() {
@@ -281,9 +335,13 @@ export default {
     },
     async fetchArtists(value) {
       if (value) {
+        this.fetchingArtists = true;
         let res = await this.$axios.$get(`/api/spotify/findByName/${value}`);
-        let artists = res.body.artists.items;
-        this.artists = artists;
+        this.fetchingArtists = false;
+        if (res) {
+          let artists = res.body.artists.items;
+          this.artists = artists;
+        }
       }
     },
     async fetchRelatedArtists() {
