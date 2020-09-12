@@ -1,4 +1,4 @@
-let development = process.env.NODE_ENV !== "production";
+let dev = process.env.NODE_ENV !== "prod";
 export default {
   /*
    ** Nuxt rendering mode
@@ -29,7 +29,7 @@ export default {
         content: process.env.npm_package_description || ""
       }
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
+    link: [{ rel: "icon", type: "image/x-icon", href: "/logo.ico" }]
   },
   /*
    ** Global CSS
@@ -59,6 +59,6 @@ export default {
    */
   build: {},
   axios: {
-    baseURL: development ? "http://localhost:4000" : "https://playlistcompanion.herokuapp.com"
+    baseURL: dev ? "http://localhost:4000" : "https://playlistcompanion.herokuapp.com"
   }
 };
