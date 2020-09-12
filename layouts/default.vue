@@ -1,7 +1,7 @@
 <template>
   <div>
     <c-header></c-header>
-    <div style="min-height: 84.5vh" class="content">
+    <div style="min-height: 84.8vh" class="content">
       <Nuxt />
     </div>
     <c-footer></c-footer>

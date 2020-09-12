@@ -12,7 +12,7 @@
             It helps you see all your
             favorite musicians and see all the musicians that are related to them!
           </b>
-          And based on your choices it creates a playlist with the musics the musicians
+          And based on your choices it creates a playlist with the musics of the musicians
           you chose.
           <a>Its pretty awesome!</a> You just have to click on the login button
           right above login with your spotify account and give it a try!
@@ -27,7 +27,7 @@
 export default {
   methods: {
     login() {
-      window.location.replace("http://localhost:4000/auth/spotify/login");
+      window.location.replace(`${this.$axios.defaults.baseURL}/auth/spotify/login`);
     },
   },
 };
