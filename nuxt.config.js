@@ -10,7 +10,7 @@ export default {
    */
   target: "static",
   router: {
-    base: '/spotify-scrapper/'
+    base: 'spotify-scrapper'
   },
   /*
    ** Headers of the page
