@@ -1,7 +1,7 @@
 <template>
   <div>
     <c-header></c-header>
-    <div style="min-height: 84vh" class="content">
+    <div style="min-height: 84.5vh" class="content">
       <Nuxt />
     </div>
     <c-footer></c-footer>
@@ -45,7 +45,7 @@ export default {
         if (refresh_token) localStorage.setItem("refresh_token", refresh_token);
         if (expires_in)
           localStorage.setItem("expires_in", expires_in * 1000 + +moment());
-          console.log('to aqui')
+        console.log("to aqui");
         this.$router.push("/explore");
       }
     },

@@ -1,5 +1,7 @@
 {
-  "name": "spotify-explorer",
+  "name": "playlistcompanion",
+  "description": "PlaylistCompanion is your best friend when the subject is music. It helps you see all your favorite musicians and see all the musicians that are related to them! ",
+  "author": "Bruno Cordioli Machado",
   "version": "1.0.0",
   "private": true,
   "scripts": {
