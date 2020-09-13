@@ -62,7 +62,7 @@
                 :src="getImageFromArtist(item)"
               />
             </a-list-item-meta>
-            <div style="margin: 5px" slot="actions">
+            <div style="margin: 5px;" slot="actions">
               <c-actions :search="false" :item="item"></c-actions>
             </div>
           </a-list-item>
@@ -81,7 +81,7 @@
           </span>
         </div>
         <a-table
-          :style="innerWidth > 550 ? 'width: 81vw': 'width: 90vw'"
+          :style="innerWidth > 550 ? 'width: 81vw': 'width: 95vw'"
           :size="innerWidth > 550 ? 'default' : 'small'"
           :columns="innerWidth > 550 ? relatedArtistsColumns : relatedArtistsColumnsMobile"
           :pagination="{ pageSize: 5 }"
