@@ -69,53 +69,49 @@
         </a-list>
       </div>
 
-      <a-space v-if="relatedArtists.length > 0" direction="vertical" align="center">
-        <div style="margin: 10px">
-          <span style="text-align: left">
-            <a-icon type="arrow-down" />&nbsp;Artists related to
-            <a
-              target="_blank"
-              :href="this.searchedArtists[0].external_urls.spotify"
-            >{{ this.searchedArtists[0].name}}</a>
-            <a-icon type="arrow-down" />
-          </span>
-        </div>
-        <a-table
-          :style="innerWidth > 550 ? 'width: 81vw': 'width: 95vw'"
-          :size="innerWidth > 550 ? 'default' : 'small'"
-          :columns="innerWidth > 550 ? relatedArtistsColumns : relatedArtistsColumnsMobile"
-          :pagination="{ pageSize: 5 }"
-          :data-source="relatedArtists"
-        >
-          <span slot="images" slot-scope="images, item">
-            <a-avatar slot="avatar" :src="getImageFromArtist(item)" />
-          </span>
-          <div slot="name" slot-scope="name, item">
-            <a target="_blank" :href="item.external_urls.spotify">{{ item.name }}</a>
+      <div :style="innerWidth > 550 ? 'width: 81vw': 'width: 95vw'">
+        <a-space v-if="relatedArtists.length > 0" direction="vertical" align="center">
+          <div style="margin: 10px">
+            <span style="text-align: left">
+              <a-icon type="arrow-down" />&nbsp;Artists related to
+              <a
+                target="_blank"
+                :href="this.searchedArtists[0].external_urls.spotify"
+              >{{ this.searchedArtists[0].name}}</a>
+              <a-icon type="arrow-down" />
+            </span>
           </div>
-          <span slot="genres" slot-scope="genres">
-            <a-tag
-              v-for="genre in genres"
-              :key="genre"
-              :color="genre === 'loser' ? 'volcano' : genre.length > 5 ? 'geekblue' : 'green'"
-            >{{ genre.toUpperCase() }}</a-tag>
-          </span>
-          <div slot="action" slot-scope="item">
-            <c-actions :search="true" :item="item"></c-actions>
-          </div>
-        </a-table>
-      </a-space>
-
-      <div
-        v-show="selectedArtists.length > 0"
-        style="margin-bottom: 20px; text-align: right !important; width: 81vw"
-      >
-        <a-space direction="horizontal" align="end">
-          <a-popover title="Number of artists seleted">
-            <a-button style="width: 10vw" type="dashed">{{ selectedArtists.length }}</a-button>
-          </a-popover>
-          <a-button style="width: 70vw" type="primary" @click="modalVisible = true;">Create Playlist</a-button>
+          <a-table
+            :style="innerWidth > 550 ? 'width: 81vw': 'width: 95vw'"
+            :size="innerWidth > 550 ? 'default' : 'small'"
+            :columns="innerWidth > 550 ? relatedArtistsColumns : relatedArtistsColumnsMobile"
+            :pagination="{ pageSize: 5 }"
+            :data-source="relatedArtists"
+          >
+            <span slot="images" slot-scope="images, item">
+              <a-avatar slot="avatar" :src="getImageFromArtist(item)" />
+            </span>
+            <div slot="name" slot-scope="name, item">
+              <a target="_blank" :href="item.external_urls.spotify">{{ item.name }}</a>
+            </div>
+            <span slot="genres" slot-scope="genres">
+              <a-tag
+                v-for="genre in genres"
+                :key="genre"
+                :color="genre === 'loser' ? 'volcano' : genre.length > 5 ? 'geekblue' : 'green'"
+              >{{ genre.toUpperCase() }}</a-tag>
+            </span>
+            <div slot="action" slot-scope="item">
+              <c-actions :search="true" :item="item"></c-actions>
+            </div>
+          </a-table>
         </a-space>
+        <a-button
+          v-show="selectedArtists.length > 0"
+          type="primary"
+          block
+          @click="modalVisible = true;"
+        >Create Playlist</a-button>
       </div>
       <div v-show="selectedArtists.length > 0">
         <span style="text-align: left">
