@@ -294,7 +294,7 @@ export default {
     async fetchArtists(value) {
       if (value) {
         this.fetchingArtists = true;
-        let res = await this.$axios.$get(`/api/spotify/findByName/${value}`);
+        let res = await this.$axios.$get(`/api/spotify/search?query=${value}`);
         this.fetchingArtists = false;
         if (res) {
           let artists = res.body.artists.items;

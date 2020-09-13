@@ -14,7 +14,7 @@
           </b>
           And based on your choices it creates a playlist with the musics of the musicians
           you chose.
-          <a>Its pretty awesome!</a> You just have to click on the login button
+          <b>Its pretty awesome!</b> You just have to click on the login button
           right above login with your spotify account and give it a try!
         </p>
         <a-button
