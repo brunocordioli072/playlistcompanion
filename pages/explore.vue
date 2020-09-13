@@ -82,6 +82,7 @@
         </div>
         <a-table
           style="width: 81vw"
+          :size="innerWidth > 550 ? 'default' : 'small'"
           :columns="innerWidth > 550 ? relatedArtistsColumns : relatedArtistsColumnsMobile"
           :pagination="{ pageSize: 5 }"
           :data-source="relatedArtists"
