@@ -108,13 +108,13 @@
 
       <div
         v-show="selectedArtists.length > 0"
-        style="margin-right: 20px; text-align: right !important"
+        style="margin-bottom: 20px; text-align: right !important; width: 81vw"
       >
         <a-space direction="horizontal" align="end">
           <a-popover title="Number of artists seleted">
-            <a-button type="dashed">{{ selectedArtists.length }}</a-button>
+            <a-button style="width: 10vw" type="dashed">{{ selectedArtists.length }}</a-button>
           </a-popover>
-          <a-button type="primary" @click="modalVisible = true;">Create Playlist</a-button>
+          <a-button style="width: 70vw" type="primary" @click="modalVisible = true;">Create Playlist</a-button>
         </a-space>
       </div>
       <div v-show="selectedArtists.length > 0">
