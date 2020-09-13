@@ -101,7 +101,7 @@
             >{{ genre.toUpperCase() }}</a-tag>
           </span>
           <div slot="action" slot-scope="item">
-            <c-actions :item="item"></c-actions>
+            <c-actions :search="true" :item="item"></c-actions>
           </div>
         </a-table>
       </a-space>
