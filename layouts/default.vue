@@ -17,7 +17,6 @@ export default {
     console.log(this.$store);
     this.setAuth();
     this.$axios.setToken(this.$store.getters["client/access_token"]);
-    let expires_in = this.$store.getters["client/expires_in"];
     this.$axios.onError(async (error) => {
       if (error.response.status === 401) {
         await this.refreshToken();

@@ -111,7 +111,7 @@
           :pagination="{ pageSize: 5 }"
           :data-source="relatedArtists"
         >
-          <span slot="images" slot-scope="images, item">
+          <span slot="images" slot-scope="item">
             <a-avatar slot="avatar" :src="getImageFromArtist(item)" />
           </span>
           <span slot="genres" slot-scope="genres">
@@ -121,7 +121,7 @@
               :color="genre === 'loser' ? 'volcano' : genre.length > 5 ? 'geekblue' : 'green'"
             >{{ genre.toUpperCase() }}</a-tag>
           </span>
-          <span slot="action" slot-scope="text, item">
+          <span slot="action" slot-scope="item">
             <a @click="addSelectedArtists(item)">
               Add to
               <b>playlist</b>
