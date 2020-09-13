@@ -1,22 +1,23 @@
 <template>
   <a-space direction="horizontal">
-    <a
-      :style="hasArtistOnPlaylist ? 'color: grey': 'color: #1890ff'"
-      @click="hasArtistOnPlaylist ? '' : addSelectedArtists(item)"
-    >
-      Add to
-      <b>playlist</b>
-    </a>
+    <a-icon
+      v-show="search"
+      :type="'search'"
+      :style="{ fontSize: '20px', color: '#1890ff'}"
+      @click="updateSearchedArtist(item)"
+    />
     <a-divider v-show="search" type="vertical" />
-    <a v-show="search" @click="updateSearchedArtist(item)">Search</a>
+    <a-icon
+      :type="!hasArtistOnPlaylist ? 'plus-circle': 'minus-circle'"
+      :style="!hasArtistOnPlaylist ? { fontSize: '20px', color: '#1890ff' }: { fontSize: '20px', color: 'red' }"
+      @click="!hasArtistOnPlaylist ? addSelectedArtists(item) : removeSelectedArtists(item)"
+    />
     <a-divider type="vertical" />
     <a-icon
-      v-if="source == playerSource && isPlaying"
-      style="color: green"
-      type="play-circle"
-      @click="stopPlayer"
+      :style="!canBePlayed ? { fontSize: '20px', color: 'grey' }: { fontSize: '20px', color: 'green' }"
+      :type="'play-circle'"
+      @click="!canBePlayed ? playTopTrackByArtist(item) : stopPlayer()"
     />
-    <a-icon v-else style="color: grey" type="play-circle" @click="playTopTrackByArtist(item)" />
     <!-- <a-divider type="vertical" />
           <a class="ant-dropdown-link">
             More actions
@@ -48,6 +49,9 @@ export default {
       this.$store.commit("explore/isPlaying", true);
       console.log(this.$store);
     },
+    removeSelectedArtists(item) {
+      this.selectedArtists = this.selectedArtists.filter((a) => a != item);
+    },
     stopPlayer() {
       this.$store.commit("explore/isPlaying", false);
     },
@@ -60,6 +64,9 @@ export default {
     },
   },
   computed: {
+    canBePlayed() {
+      return this.source == this.playerSource && this.isPlaying;
+    },
     hasArtistOnPlaylist() {
       return this.selectedArtistsNames.includes(this.item.name);
     },
