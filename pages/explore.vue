@@ -114,12 +114,7 @@
           <a-popover title="Number of artists seleted">
             <a-button type="dashed">{{ selectedArtists.length }}</a-button>
           </a-popover>
-          <a-popover title="The Playlist Maker">
-            <template slot="content">
-              <p>Click and create a playlist with the artists selected!</p>
-            </template>
-            <a-button type="primary" @click="modalVisible = true;">Create Playlist</a-button>
-          </a-popover>
+          <a-button type="primary" @click="modalVisible = true;">Create Playlist</a-button>
         </a-space>
       </div>
       <div v-show="selectedArtists.length > 0">

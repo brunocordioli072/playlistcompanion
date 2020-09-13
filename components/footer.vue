@@ -1,7 +1,7 @@
 <template>
   <a-layout-footer style="text-align: center">
-    PlaylistCompanion ©2020 Created by
-    <a target="_blank" href="https://www.linkedin.com/in/bruno-cordioli-machado-4b2a47180/">Bruno Cordioli</a>
+    PlaylistCompanion ©2020 |
+    <a target="_blank" href="https://www.patreon.com/brunocordioli072">Support the developer :)</a>
   </a-layout-footer>
 </template>
 
