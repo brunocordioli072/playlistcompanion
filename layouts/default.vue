@@ -10,15 +10,17 @@
 
 <script>
 import moment from "moment";
+import { mapGetters } from "vuex";
+
 export default {
   async mounted() {
-    this.setToken();
-    console.log(this.access_token);
-    this.$axios.setToken(localStorage.getItem("access_token"));
-    let expires_in = localStorage.getItem("expires_in");
+    console.log(this.$store);
+    this.setAuth();
+    this.$axios.setToken(this.$store.getters["client/access_token"]);
+    let expires_in = this.$store.getters["client/expires_in"];
     this.$axios.onError(async (error) => {
       if (error.response.status === 401) {
-        await this.refresh_token();
+        await this.refreshToken();
         this.$notification.open({
           message: "Error",
           description: `Some error has occured, please try again...`,
@@ -27,62 +29,59 @@ export default {
       }
     });
     if (this.expired_token) {
-      await this.refresh_token();
+      await this.refreshToken();
     }
-    if (this.access_token) {
-      this.$router.push("/explore");
-    } else if (!this.access_token) {
+    if (this.$route.query) {
       this.$router.push("/");
     }
   },
   methods: {
-    setToken() {
+    setAuth() {
       if (this.$route.query) {
         let access_token = this.$route.query.access_token;
         let expires_in = this.$route.query.expires_in;
         let refresh_token = this.$route.query.refresh_token;
-        if (access_token) localStorage.setItem("access_token", access_token);
-        if (refresh_token) localStorage.setItem("refresh_token", refresh_token);
+        if (access_token)
+          this.$store.commit("client/setAccess_token", access_token);
+        if (refresh_token)
+          this.$store.commit("client/setRefresh_token", access_token);
         if (expires_in)
-          localStorage.setItem("expires_in", expires_in * 1000 + +moment());
-        console.log("to aqui");
-        this.$router.push("/explore");
+          this.$store.commit(
+            "client/setExpires_in",
+            expires_in * 1000 + +moment()
+          );
+        console.log("this.isAuthenticated", this.isAuthenticated);
+        if (this.isAuthenticated) {
+          this.$router.push("/explore");
+        }
       }
     },
-    async refresh_token() {
+    async refreshToken() {
       let res = await this.$axios.$get(
-        `/auth/spotify/refresh_token?refresh_token=${localStorage.getItem(
-          "refresh_token"
-        )}`
+        `/auth/spotify/refresh_token?
+        refresh_token=${this.$store.getters["client/refresh_token"]}`
       );
-      localStorage.setItem("access_token", res.access_token);
-      localStorage.setItem("expires_in", 3600 * 1000 + +moment());
-      this.$axios.setToken(localStorage.getItem("access_token"));
+      this.$store.commit("client/setAccess_token", res.access_token);
+      this.$store.commit("client/setExpires_in", 3600 * 1000 + +moment());
+      this.$axios.setToken(this.$store.getters["client/access_token"]);
     },
   },
   computed: {
-    expired_token() {
-      let expires_in = localStorage.getItem("expires_in");
-      return parseInt(expires_in) <= +moment();
-    },
-    access_token() {
-      return localStorage.getItem("access_token");
-    },
+    ...mapGetters({
+      access_token: "client/access_token",
+      refresh_token: "client/refresh_token",
+      isAuthenticated: "client/isAuthenticated",
+    }),
   },
   watch: {
     "$router.query": function () {
-      this.setToken();
+      this.setAuth();
     },
-    access_token: function () {
-      if (this.access_token) {
-        this.$router.push("/explore");
+    isAuthenticated: async function () {
+      if (!this.isAuthenticated && this.refresh_token) {
+        await this.refreshToken();
       } else {
-        this.$router.push("");
-      }
-    },
-    expired_token: async function () {
-      if (this.expired_token) {
-        await this.refresh_token();
+        this.$router.push("/");
       }
     },
   },

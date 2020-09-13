@@ -20,7 +20,8 @@
     "vue-plyr": "^6.0.4",
     "vue-simple-tree": "^2.3.2",
     "vue-tree-chart": "^1.2.9",
-    "vued3tree": "^5.1.0"
+    "vued3tree": "^5.1.0",
+    "vuex-persist": "^2.2.0"
   },
   "devDependencies": {
     "@nuxtjs/fontawesome": "^1.1.2",

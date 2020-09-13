@@ -17,18 +17,34 @@
           <a>Its pretty awesome!</a> You just have to click on the login button
           right above login with your spotify account and give it a try!
         </p>
-        <a-button size="large" type="primary" id="login" @click="login">login</a-button>
+        <a-button
+          v-if="isAuthenticated"
+          size="large"
+          type="primary"
+          id="login"
+          @click="$router.push('/explore')"
+        >Go explore!</a-button>
+        <a-button v-else size="large" type="primary" id="login" @click="login">login</a-button>
       </div>
     </a-space>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   methods: {
     login() {
-      window.location.replace(`${this.$axios.defaults.baseURL}/auth/spotify/login`);
+      window.location.replace(
+        `${this.$axios.defaults.baseURL}/auth/spotify/login`
+      );
     },
+  },
+  computed: {
+    ...mapGetters({
+      isAuthenticated: "client/isAuthenticated",
+    }),
   },
 };
 </script>

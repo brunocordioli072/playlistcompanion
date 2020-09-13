@@ -18,14 +18,11 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
-  mounted() {
-    console.log(this.access_token);
-  },
   computed: {
-    access_token() {
-      return localStorage.getItem("access_token");
-    },
+    ...mapGetters({ access_token: "client/access_token" }),
   },
 };
 </script>

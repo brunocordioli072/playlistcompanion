@@ -242,6 +242,7 @@
 
 <script>
 export default {
+  middleware: "authentication",
   data() {
     return {
       modalVisible: false,
