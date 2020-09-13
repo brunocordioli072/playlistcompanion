@@ -1,12 +1,12 @@
 <template>
-  <div class="content">
+  <div>
     <a-space direction="vertical">
       <a-select
         label-in-value
         show-search
         :value="search"
         placeholder="Search artists"
-        style="width: 50vw; min-width: 300px"
+        style="width: 50vw; min-width: 250px"
         :filter-option="false"
         :not-found-content="fetchingArtists ? undefined : null"
         @search="fetchArtists"
@@ -63,33 +63,8 @@
               />
             </a-list-item-meta>
             <div style="margin: 5px" slot="actions">
-              <a @click="addSelectedArtists(item)">
-                Add to
-                <b>playlist</b>
-              </a>
-              <a-divider type="vertical" />
-              <a @click="updateSearchedArtist(item)">Search</a>
-              <a-divider type="vertical" />
-              <a-icon
-                v-show="!item.playing"
-                style="color: grey"
-                type="play-circle"
-                @click="playTopTrackByArtist(item)"
-              />
-              <a-icon
-                v-show="item.playing"
-                style="color: green"
-                type="play-circle"
-                @click="stopPlayer(), $set(item, 'playing', false)"
-              />
+              <c-actions :search="false" :item="item"></c-actions>
             </div>
-            <!-- <a-button
-              slot="actions"
-              size="small"
-              type="dashed"
-              :color="'red'"
-              @click="removeSearchedArtist(item)"
-            >Remove</a-button>-->
           </a-list-item>
         </a-list>
       </div>
@@ -107,13 +82,16 @@
         </div>
         <a-table
           style="width: 81vw"
-          :columns="relatedArtistsColumns"
+          :columns="innerWidth > 550 ? relatedArtistsColumns : relatedArtistsColumnsMobile"
           :pagination="{ pageSize: 5 }"
           :data-source="relatedArtists"
         >
-          <span slot="images" slot-scope="item">
+          <span slot="images" slot-scope="images, item">
             <a-avatar slot="avatar" :src="getImageFromArtist(item)" />
           </span>
+          <div slot="name" slot-scope="name, item">
+            <a target="_blank" :href="item.external_urls.spotify">{{ item.name }}</a>
+          </div>
           <span slot="genres" slot-scope="genres">
             <a-tag
               v-for="genre in genres"
@@ -121,32 +99,9 @@
               :color="genre === 'loser' ? 'volcano' : genre.length > 5 ? 'geekblue' : 'green'"
             >{{ genre.toUpperCase() }}</a-tag>
           </span>
-          <span slot="action" slot-scope="item">
-            <a @click="addSelectedArtists(item)">
-              Add to
-              <b>playlist</b>
-            </a>
-            <a-divider type="vertical" />
-            <a @click="updateSearchedArtist(item)">Search</a>
-            <a-divider type="vertical" />
-            <a-icon
-              v-show="!item.playing"
-              style="color: grey"
-              type="play-circle"
-              @click="playTopTrackByArtist(item)"
-            />
-            <a-icon
-              v-show="item.playing"
-              style="color: green"
-              type="play-circle"
-              @click="stopPlayer(), $set(item, 'playing', false)"
-            />
-            <!-- <a-divider type="vertical" />
-          <a class="ant-dropdown-link">
-            More actions
-            <a-icon type="down" />
-            </a>-->
-          </span>
+          <div slot="action" slot-scope="item">
+            <c-actions :item="item"></c-actions>
+          </div>
         </a-table>
       </a-space>
 
@@ -216,6 +171,11 @@
         </a-timeline>
       </div>
     </a-space>
+    <vue-plyr ref="plyr" style="display: none; visibility: hidden;">
+      <audio>
+        <source type="audio/mp3" />
+      </audio>
+    </vue-plyr>
     <a-modal
       title="The Playlist Maker"
       :visible="modalVisible"
@@ -232,15 +192,12 @@
         <b>each artist</b> you selected!
       </p>
     </a-modal>
-    <vue-plyr ref="plyr" style="display: none; visibility: hidden;">
-      <audio>
-        <source type="audio/mp3" />
-      </audio>
-    </vue-plyr>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   middleware: "authentication",
   data() {
@@ -251,9 +208,6 @@ export default {
       creatingPlaylist: false,
       fetchingArtists: false,
       artists: [],
-      searchedArtists: [],
-      selectedArtists: [],
-      relatedArtists: [],
       relatedArtistsColumns: [
         {
           dataIndex: "images",
@@ -267,6 +221,7 @@ export default {
           dataIndex: "name",
           align: "center",
           key: "name",
+          scopedSlots: { customRender: "name" },
         },
         {
           title: "Genres",
@@ -274,6 +229,28 @@ export default {
           align: "center",
           dataIndex: "genres",
           scopedSlots: { customRender: "genres" },
+        },
+        {
+          title: "Action",
+          key: "action",
+          align: "center",
+          scopedSlots: { customRender: "action" },
+        },
+      ],
+      relatedArtistsColumnsMobile: [
+        {
+          dataIndex: "images",
+          key: "images",
+          title: "",
+          align: "center",
+          scopedSlots: { customRender: "images" },
+        },
+        {
+          title: "Name",
+          dataIndex: "name",
+          align: "center",
+          key: "name",
+          scopedSlots: { customRender: "name" },
         },
         {
           title: "Action",
@@ -318,22 +295,6 @@ export default {
         }
       }
     },
-    startPlayer() {
-      this.$refs.plyr.player.play();
-    },
-    stopPlayer() {
-      this.$refs.plyr.player.stop();
-    },
-    async playTopTrackByArtist(item) {
-      this.$set(item, "playing", true);
-      let res = await this.$axios.$get(`/api/spotify/topTrack/${item.id}`);
-      let tracks = res.body.tracks;
-      this.$refs.plyr.player.source = {
-        type: "audio",
-        sources: [{ src: tracks[0].preview_url, type: "audio/mp3" }],
-      };
-      this.$refs.plyr.player.play();
-    },
     async fetchArtists(value) {
       if (value) {
         this.fetchingArtists = true;
@@ -358,9 +319,6 @@ export default {
     getImageFromArtist(item) {
       return item.images && item.images.length > 0 ? item.images[0].url : "";
     },
-    addSelectedArtists(item) {
-      this.selectedArtists.push(item);
-    },
     removeSelectedArtists(item) {
       this.selectedArtists = this.selectedArtists.filter((a) => a != item);
     },
@@ -376,7 +334,57 @@ export default {
       });
     },
   },
+  computed: {
+    ...mapGetters({
+      isPlaying: "explore/isPlaying",
+      playerSource: "explore/playerSource",
+    }),
+    innerWidth() {
+      return window.innerWidth;
+    },
+    searchedArtists: {
+      get: function () {
+        return this.$store.getters["explore/searchedArtists"];
+      },
+      set: function (val) {
+        this.$store.commit("explore/searchedArtists", val);
+      },
+    },
+    selectedArtists: {
+      get: function () {
+        return this.$store.getters["explore/selectedArtists"];
+      },
+      set: function (val) {
+        this.$store.commit("explore/selectedArtists", val);
+      },
+    },
+    relatedArtists: {
+      get: function () {
+        return this.$store.getters["explore/relatedArtists"];
+      },
+      set: function (val) {
+        this.$store.commit("explore/relatedArtists", val);
+      },
+    },
+  },
   watch: {
+    isPlaying() {
+      if (this.isPlaying) {
+        setTimeout(() => {
+          this.$refs.plyr.player.play();
+        }, 300);
+      } else {
+        setTimeout(() => {
+          this.$refs.plyr.player.stop();
+        }, 300);
+      }
+    },
+    playerSource() {
+      this.$refs.plyr.player.source = {
+        type: "audio",
+        sources: [{ src: this.playerSource, type: "audio/mp3" }],
+      };
+    },
     async searchedArtists() {
       await this.fetchRelatedArtists();
     },

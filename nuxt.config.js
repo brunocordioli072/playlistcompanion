@@ -18,7 +18,7 @@ export default {
     htmlAttrs: {
       lang: "en"
     },
-    titleTemplate: "%s - " + process.env.npm_package_name,
+    titleTemplate: "%s - " + "PlaylistCompanion",
     title: "PlaylistCompanion",
     meta: [
       { charset: "utf-8" },

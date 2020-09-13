@@ -1,7 +1,7 @@
 <template>
   <div>
     <c-header></c-header>
-    <div style="min-height: 84.8vh" class="content">
+    <div style="min-height: 84.8vh;" class="content">
       <Nuxt />
     </div>
     <c-footer></c-footer>
@@ -14,7 +14,7 @@ import { mapGetters } from "vuex";
 
 export default {
   async mounted() {
-    console.log(this.$store);
+    console.log(this.$store, window.innerWidth);
     this.setAuth();
     this.$axios.setToken(this.$store.getters["client/access_token"]);
     this.$axios.onError(async (error) => {
@@ -89,7 +89,7 @@ export default {
 
 <style>
 .content {
-  margin-top: 2vh;
+  margin-top: 12vh;
   display: flex;
   justify-content: center;
   text-align: center;

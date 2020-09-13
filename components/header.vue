@@ -1,19 +1,22 @@
 <template>
   <a-layout-header>
-    <div class="logo">
-      <a-button @click="$router.push('/')" type="link" ghost>
-        <span id="playlist">Playlist</span>
-        <span id="companion">Companion</span>
-      </a-button>
-    </div>
-    <a-menu
-      theme="dark"
-      mode="horizontal"
-      :default-selected-keys="['4']"
-      :style="{ lineHeight: '64px' }"
-    >
-      <a-menu-item v-show="access_token" @click="$router.push('/explore')">explore</a-menu-item>
-    </a-menu>
+    <a-space direction="horizontal">
+      <img style="width: 50px" src="~/assets/logo.png" />
+      <div class="logo">
+        <a-button @click="$router.push('/')" type="link" ghost>
+          <span id="playlist">Playlist</span>
+          <span id="companion">Companion</span>
+        </a-button>
+      </div>
+      <!-- <a-menu
+        theme="dark"
+        mode="horizontal"
+        :default-selected-keys="['4']"
+        :style="{ lineHeight: '64px' }"
+      >
+        <a-menu-item v-show="access_token" @click="$router.push('/explore')">explore</a-menu-item>
+      </a-menu> -->
+    </a-space>
   </a-layout-header>
 </template>
 
@@ -32,7 +35,7 @@ export default {
 
 .logo {
   width: 180px;
-  height: 31px;
+  height: 45px;
   color: white;
   margin: 0px 24px 16px 0;
   float: left;
