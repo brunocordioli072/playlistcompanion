@@ -1,4 +1,6 @@
 export default () => ({
+  search: [],
+  artists: [],
   searchedArtists: [],
   selectedArtists: [],
   relatedArtists: [],

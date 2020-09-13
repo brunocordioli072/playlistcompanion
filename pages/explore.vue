@@ -200,10 +200,8 @@ export default {
     return {
       modalVisible: false,
       playlistName: null,
-      search: [],
       creatingPlaylist: false,
       fetchingArtists: false,
-      artists: [],
       relatedArtistsColumns: [
         {
           dataIndex: "images",
@@ -338,6 +336,22 @@ export default {
     innerWidth() {
       return window.innerWidth;
     },
+    search: {
+      get: function () {
+        return this.$store.getters["explore/search"];
+      },
+      set: function (val) {
+        this.$store.commit("explore/search", val);
+      },
+    },
+    artists: {
+      get: function () {
+        return this.$store.getters["explore/artists"];
+      },
+      set: function (val) {
+        this.$store.commit("explore/artists", val);
+      },
+    },
     searchedArtists: {
       get: function () {
         return this.$store.getters["explore/searchedArtists"];
@@ -368,11 +382,11 @@ export default {
       if (this.isPlaying) {
         setTimeout(() => {
           this.$refs.plyr.player.play();
-        }, 300);
+        }, 100);
       } else {
         setTimeout(() => {
           this.$refs.plyr.player.stop();
-        }, 300);
+        }, 100);
       }
     },
     playerSource() {

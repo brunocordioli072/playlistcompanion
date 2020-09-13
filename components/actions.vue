@@ -1,6 +1,9 @@
 <template>
   <a-space direction="horizontal">
-    <a @click="addSelectedArtists(item)">
+    <a
+      :style="hasArtistOnPlaylist ? 'color: grey': 'color: #1890ff'"
+      @click="hasArtistOnPlaylist ? '' : addSelectedArtists(item)"
+    >
       Add to
       <b>playlist</b>
     </a>
@@ -57,7 +60,11 @@ export default {
     },
   },
   computed: {
+    hasArtistOnPlaylist() {
+      return this.selectedArtistsNames.includes(this.item.name);
+    },
     ...mapGetters({
+      selectedArtistsNames: "explore/selectedArtistsNames",
       isPlaying: "explore/isPlaying",
       playerSource: "explore/playerSource",
     }),

@@ -14,7 +14,6 @@ import { mapGetters } from "vuex";
 
 export default {
   async mounted() {
-    console.log(this.$store, window.innerWidth);
     this.setAuth();
     this.$axios.setToken(this.$store.getters["client/access_token"]);
     this.$axios.onError(async (error) => {
@@ -49,7 +48,6 @@ export default {
             "client/setExpires_in",
             expires_in * 1000 + +moment()
           );
-        console.log("this.isAuthenticated", this.isAuthenticated);
         if (this.isAuthenticated) {
           this.$router.push("/explore");
         }

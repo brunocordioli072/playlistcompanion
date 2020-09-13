@@ -1,4 +1,10 @@
 export default {
+  search(state, search) {
+    state.search = search;
+  },
+  artists(state, artists) {
+    state.artists = artists;
+  },
   searchedArtists(state, searchedArtists) {
     state.searchedArtists = searchedArtists;
   },
