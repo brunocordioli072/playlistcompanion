@@ -5,12 +5,13 @@
         label-in-value
         show-search
         :value="search"
+        size="large"
         placeholder="Search anything related to music :)"
         style="width: 50vw; min-width: 270px"
         :filter-option="false"
         :not-found-content="fetchingArtists ? undefined : null"
         @search="fetchArtists"
-        @click="search = null"
+        @change="handleChange"
       >
         <a-spin v-if="fetchingArtists" slot="notFoundContent" size="small" />
         <a-select-option
@@ -18,14 +19,18 @@
           :key="index"
           @click="updateSearchedArtist(item)"
         >
-          <a-avatar slot="avatar" :src="getImageFromArtist(item)" />
-          <b style="margin-left: 10px">{{ item.name }}</b>
-          <a-tag
-            style="margin-left: 5px"
-            v-for="genre in item.genres"
-            :key="genre"
-            :color="genre === 'loser' ? 'volcano' : genre.length > 5 ? 'geekblue' : 'green'"
-          >{{ genre.toUpperCase() }}</a-tag>
+          <a-space direction="horizontal">
+            <a-avatar slot="avatar" :src="getImageFromArtist(item)" />
+            <b style="margin-left: 10px">{{ item.name }}</b>
+            <div v-if="innerWidth > 550">
+              <a-tag
+                style="margin-left: 5px"
+                v-for="genre in item.genres"
+                :key="genre"
+                :color="genre === 'loser' ? 'volcano' : genre.length > 5 ? 'geekblue' : 'green'"
+              >{{ genre.toUpperCase() }}</a-tag>
+            </div>
+          </a-space>
         </a-select-option>
       </a-select>
 
@@ -253,6 +258,11 @@ export default {
   },
 
   methods: {
+    handleChange(search) {
+      Object.assign(this, {
+        search,
+      });
+    },
     clearView() {
       this.creatingPlaylist = false;
       this.modalVisible = false;

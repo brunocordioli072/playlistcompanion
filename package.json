@@ -5,9 +5,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "NODE_ENV=dev nuxt",
     "build": "NODE_ENV=prod nuxt build",
-    "start": "NODE_ENV=dev nuxt start",
+    "start:dev": "NODE_ENV=dev nuxt",
+    "start:prod": "NODE_ENV=prod nuxt",
+    "start:build:dev": "NODE_ENV=dev nuxt start",
     "generate": "nuxt generate",
     "test": "jest",
     "deploy": "push-dir --dir=dist --branch=gh-pages --cleanup"
