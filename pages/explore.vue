@@ -5,8 +5,8 @@
         label-in-value
         show-search
         :value="search"
-        placeholder="Search artists"
-        style="width: 50vw; min-width: 250px"
+        placeholder="Search anything related to music :)"
+        style="width: 50vw; min-width: 270px"
         :filter-option="false"
         :not-found-content="fetchingArtists ? undefined : null"
         @search="fetchArtists"
