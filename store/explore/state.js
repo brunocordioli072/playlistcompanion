@@ -5,5 +5,6 @@ export default () => ({
   selectedArtists: [],
   relatedArtists: [],
   playerSource: null,
-  isPlaying: false
+  playerIsLoading: false,
+  playerIsPlaying: false,
 });

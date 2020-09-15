@@ -8,14 +8,15 @@
           <span id="companion">Companion</span>
         </a-button>
       </div>
-      <!-- <a-menu
+      <a-menu
+        v-if="!isMobile"
         theme="dark"
         mode="horizontal"
         :default-selected-keys="['4']"
         :style="{ lineHeight: '64px' }"
       >
         <a-menu-item v-show="access_token" @click="$router.push('/explore')">explore</a-menu-item>
-      </a-menu> -->
+      </a-menu>
     </a-space>
   </a-layout-header>
 </template>
@@ -25,7 +26,10 @@ import { mapGetters } from "vuex";
 
 export default {
   computed: {
-    ...mapGetters({ access_token: "client/access_token" }),
+    ...mapGetters({
+      access_token: "client/access_token",
+      isMobile: "client/isMobile",
+    }),
   },
 };
 </script>

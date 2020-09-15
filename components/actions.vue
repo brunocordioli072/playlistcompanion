@@ -14,10 +14,12 @@
     />
     <a-divider type="vertical" />
     <a-icon
+      v-if="!playerIsLoading"
       :style="!canBePlayed ? { fontSize: '20px', color: 'grey' }: { fontSize: '20px', color: 'green' }"
       :type="'play-circle'"
       @click="!canBePlayed ? playTopTrackByArtist(item) : stopPlayer()"
     />
+    <a-icon v-else :type="'loading'" />
     <!-- <a-divider type="vertical" />
           <a class="ant-dropdown-link">
             More actions
@@ -41,40 +43,39 @@ export default {
   },
   methods: {
     async playTopTrackByArtist(item) {
-      this.$store.commit("explore/isPlaying", false);
+      this.playerIsPlaying = false;
       let res = await this.$axios.$get(`/api/spotify/topTrack/${item.id}`);
       let tracks = res.body.tracks;
       this.source = tracks[0].preview_url;
       this.$store.commit("explore/playerSource", tracks[0].preview_url);
-      this.$store.commit("explore/isPlaying", true);
-      console.log(this.$store);
+      this.playerIsPlaying = true;
     },
     removeSelectedArtists(item) {
       this.selectedArtists = this.selectedArtists.filter((a) => a != item);
     },
     stopPlayer() {
-      this.$store.commit("explore/isPlaying", false);
+      this.$store.commit("explore/playerIsPlaying", false);
     },
     updateSearchedArtist(item) {
       this.searchedArtists = [item];
     },
     addSelectedArtists(item) {
       this.$store.commit("explore/addSelectedArtist", item);
-      console.log(this.selectedArtists);
     },
   },
   computed: {
+    ...mapGetters({
+      selectedArtistsNames: "explore/selectedArtistsNames",
+      playerIsPlaying: "explore/playerIsPlaying",
+      playerIsLoading: "explore/playerIsLoading",
+      playerSource: "explore/playerSource",
+    }),
     canBePlayed() {
-      return this.source == this.playerSource && this.isPlaying;
+      return this.source == this.playerSource && this.playerIsPlaying;
     },
     hasArtistOnPlaylist() {
       return this.selectedArtistsNames.includes(this.item.name);
     },
-    ...mapGetters({
-      selectedArtistsNames: "explore/selectedArtistsNames",
-      isPlaying: "explore/isPlaying",
-      playerSource: "explore/playerSource",
-    }),
     searchedArtists: {
       get: function () {
         return this.$store.getters["explore/searchedArtists"];
@@ -90,6 +91,19 @@ export default {
       set: function (val) {
         this.$store.commit("explore/selectedArtists", val);
       },
+    },
+    playerIsPlaying: {
+      get: function () {
+        return this.$store.getters["explore/playerIsPlaying"];
+      },
+      set: function (val) {
+        this.$store.commit("explore/playerIsPlaying", val);
+      },
+    },
+  },
+  watch: {
+    playerIsLoading() {
+      console.log(this.playerIsLoading);
     },
   },
 };

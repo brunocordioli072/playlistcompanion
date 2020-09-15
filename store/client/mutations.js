@@ -7,5 +7,8 @@ export default {
   },
   setExpires_in(state, expires_in) {
     state.expires_in = expires_in;
-  }
+  },
+  isMobile(state, isMobile) {
+    state.isMobile = isMobile;
+  },
 };

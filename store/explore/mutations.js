@@ -20,7 +20,10 @@ export default {
   playerSource(state, playerSource) {
     state.playerSource = playerSource;
   },
-  isPlaying(state, isPlaying) {
-    state.isPlaying = isPlaying;
-  }
+  playerIsLoading(state, playerIsLoading) {
+    state.playerIsLoading = playerIsLoading;
+  },
+  playerIsPlaying(state, playerIsPlaying) {
+    state.playerIsPlaying = playerIsPlaying;
+  },
 };

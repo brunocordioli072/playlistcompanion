@@ -22,7 +22,10 @@ export default {
   playerSource(state) {
     return state.playerSource;
   },
-  isPlaying(state) {
-    return state.isPlaying;
-  }
+  playerIsLoading(state) {
+    return state.playerIsLoading;
+  },
+  playerIsPlaying(state) {
+    return state.playerIsPlaying;
+  },
 };

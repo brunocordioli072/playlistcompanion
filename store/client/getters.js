@@ -12,5 +12,8 @@ export default {
   },
   isAuthenticated(state) {
     return state.expires_in && state.expires_in >= +moment();
+  },
+  isMobile(state) {
+    return state.isMobile
   }
 };

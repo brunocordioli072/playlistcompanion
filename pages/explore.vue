@@ -7,7 +7,7 @@
         :value="search"
         size="large"
         placeholder="Search anything related to music :)"
-        style="width: 50vw; min-width: 270px"
+        style="width: 50vw; min-width: 270px;"
         :filter-option="false"
         :not-found-content="fetchingArtists ? undefined : null"
         @search="fetchArtists"
@@ -22,7 +22,7 @@
           <a-space direction="horizontal">
             <a-avatar slot="avatar" :src="getImageFromArtist(item)" />
             <b style="margin-left: 10px">{{ item.name }}</b>
-            <div v-if="innerWidth > 550">
+            <div v-if="!isMobile">
               <a-tag
                 style="margin-left: 5px"
                 v-for="genre in item.genres"
@@ -74,7 +74,7 @@
         </a-list>
       </div>
 
-      <div :style="innerWidth > 550 ? 'width: 81vw': 'width: 95vw'">
+      <div :style="!isMobile ? 'width: 81vw': 'width: 95vw'">
         <a-space v-if="relatedArtists.length > 0" direction="vertical" align="center">
           <div style="margin: 10px">
             <span style="text-align: left">
@@ -87,9 +87,9 @@
             </span>
           </div>
           <a-table
-            :style="innerWidth > 550 ? 'width: 81vw': 'width: 95vw'"
-            :size="innerWidth > 550 ? 'default' : 'small'"
-            :columns="innerWidth > 550 ? relatedArtistsColumns : relatedArtistsColumnsMobile"
+            :style="!isMobile ? 'width: 81vw': 'width: 95vw'"
+            :size="!isMobile? 'default' : 'small'"
+            :columns="!isMobile ? relatedArtistsColumns : relatedArtistsColumnsMobile"
             :pagination="{ pageSize: 5 }"
             :data-source="relatedArtists"
           >
@@ -196,6 +196,10 @@
 import { mapGetters } from "vuex";
 
 export default {
+  mounted() {
+    this.$refs.plyr.player.autoplay = true;
+    this.$refs.plyr.player.loop = true;
+  },
   middleware: "authentication",
   data() {
     return {
@@ -337,12 +341,10 @@ export default {
   },
   computed: {
     ...mapGetters({
-      isPlaying: "explore/isPlaying",
+      playerIsPlaying: "explore/playerIsPlaying",
       playerSource: "explore/playerSource",
+      isMobile: "client/isMobile",
     }),
-    innerWidth() {
-      return window.innerWidth;
-    },
     search: {
       get: function () {
         return this.$store.getters["explore/search"];
@@ -385,15 +387,12 @@ export default {
     },
   },
   watch: {
-    isPlaying() {
-      if (this.isPlaying) {
-        setTimeout(() => {
-          this.$refs.plyr.player.play();
-        }, 100);
-      } else {
-        setTimeout(() => {
-          this.$refs.plyr.player.stop();
-        }, 100);
+    playerIsPlaying() {
+      if (!this.playerIsPlaying) {
+        this.$refs.plyr.player.stop();
+      }
+      if (this.playerIsPlaying && this.$refs.plyr.player.paused == true) {
+        this.$refs.plyr.player.play();
       }
     },
     playerSource() {
