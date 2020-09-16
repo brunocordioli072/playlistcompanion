@@ -106,7 +106,7 @@
                 :color="genre === 'loser' ? 'volcano' : genre.length > 5 ? 'geekblue' : 'green'"
               >{{ genre.toUpperCase() }}</a-tag>
             </span>
-            <div slot="action" slot-scope="item">
+            <div slot="action" slot-scope="action, item">
               <c-actions :search="true" :item="item"></c-actions>
             </div>
           </a-table>
@@ -279,17 +279,17 @@ export default {
     },
     async createPlaylist() {
       this.creatingPlaylist = true;
-      let res = await this.$axios.$post(
+      let playlist = await this.$axios.$post(
         `/api/spotify/playlist/${this.playlistName}`
       );
-      if (res) {
-        let res2 = await this.$axios.$post(
-          `/api/spotify/playlist/${res.body.id}/tracks`,
+      if (playlist) {
+        let res = await this.$axios.$post(
+          `/api/spotify/playlist/${playlist.id}/tracks`,
           {
             artistIds: this.selectedArtists.map((a) => a.id),
           }
         );
-        if (res2) {
+        if (res) {
           this.$notification.open({
             message: "Playlist created!!!",
             description: `Playlist added to your spotify with the name ${this.playlistName}`,
@@ -314,10 +314,9 @@ export default {
     async fetchRelatedArtists() {
       if (this.searchedArtists.length > 0) {
         let artistId = this.searchedArtists[0].id;
-        let res = await this.$axios.$get(
+        let relatedArtists = await this.$axios.$get(
           `/api/spotify/relatedArtists/${artistId}`
         );
-        let relatedArtists = res.body.artists;
         this.relatedArtists = relatedArtists;
       }
     },

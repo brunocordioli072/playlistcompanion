@@ -6,7 +6,7 @@
       :style="{ fontSize: '20px', color: '#1890ff'}"
       @click="updateSearchedArtist(item)"
     />
-    <a-divider v-show="search" type="vertical" />
+    <a-divider type="vertical" />
     <a-icon
       :type="!hasArtistOnPlaylist ? 'plus-circle': 'minus-circle'"
       :style="!hasArtistOnPlaylist ? { fontSize: '20px', color: '#1890ff' }: { fontSize: '20px', color: 'red' }"
@@ -14,12 +14,10 @@
     />
     <a-divider type="vertical" />
     <a-icon
-      v-if="!playerIsLoading"
-      :style="!canBePlayed ? { fontSize: '20px', color: 'grey' }: { fontSize: '20px', color: 'green' }"
       :type="'play-circle'"
+      :style="!canBePlayed ? { fontSize: '20px', color: 'grey' }: { fontSize: '20px', color: 'green' }"
       @click="!canBePlayed ? playTopTrackByArtist(item) : stopPlayer()"
     />
-    <a-icon v-else :type="'loading'" />
     <!-- <a-divider type="vertical" />
           <a class="ant-dropdown-link">
             More actions
@@ -38,14 +36,15 @@ export default {
   },
   data() {
     return {
-      source: null,
+      source: "",
+      sourceArtists: [],
     };
   },
   methods: {
     async playTopTrackByArtist(item) {
       this.playerIsPlaying = false;
-      let res = await this.$axios.$get(`/api/spotify/topTrack/${item.id}`);
-      let tracks = res.body.tracks;
+      let tracks = await this.$axios.$get(`/api/spotify/topTrack/${item.id}`);
+      this.sourceArtists = tracks[0].artists.map((a) => a.name);
       this.source = tracks[0].preview_url;
       this.$store.commit("explore/playerSource", tracks[0].preview_url);
       this.playerIsPlaying = true;
@@ -54,6 +53,7 @@ export default {
       this.selectedArtists = this.selectedArtists.filter((a) => a != item);
     },
     stopPlayer() {
+      this.sourceArtists = [];
       this.$store.commit("explore/playerIsPlaying", false);
     },
     updateSearchedArtist(item) {
@@ -71,7 +71,11 @@ export default {
       playerSource: "explore/playerSource",
     }),
     canBePlayed() {
-      return this.source == this.playerSource && this.playerIsPlaying;
+      return (
+        this.sourceArtists.includes(this.item.name) &&
+        this.playerIsPlaying &&
+        this.source == this.playerSource
+      );
     },
     hasArtistOnPlaylist() {
       return this.selectedArtistsNames.includes(this.item.name);

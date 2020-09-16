@@ -1,5 +1,5 @@
 <template>
-  <a-layout-header>
+  <a-layout-header :style="isMobile ? { textAlign: 'center' } : ''">
     <a-space direction="horizontal">
       <img style="width: 50px" src="~/assets/logo.png" />
       <div class="logo">
