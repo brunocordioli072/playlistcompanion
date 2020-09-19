@@ -36,6 +36,11 @@ import { mapGetters } from "vuex";
 export default {
   methods: {
     login() {
+      this.$ga.event({
+        eventCategory: "Button",
+        eventAction: "Click",
+        eventLabel: "Tried to Login",
+      });
       window.location.replace(
         `${this.$axios.defaults.baseURL}/auth/spotify/login`
       );

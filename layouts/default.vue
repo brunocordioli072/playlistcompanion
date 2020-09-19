@@ -49,6 +49,11 @@ export default {
             "client/setExpires_in",
             expires_in * 1000 + +moment()
           );
+        this.$ga.event({
+          eventCategory: "Auth",
+          eventAction: "Click",
+          eventLabel: "Logged in",
+        });
         if (this.isAuthenticated) {
           this.$router.push("/explore");
         }
