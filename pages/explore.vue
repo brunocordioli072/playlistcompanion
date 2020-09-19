@@ -295,6 +295,11 @@ export default {
             description: `Playlist added to your spotify with the name ${this.playlistName}`,
             icon: <a-icon type="smile" style="color: #108ee9" />,
           });
+          this.$ga.event({
+            eventCategory: "Button",
+            eventAction: "Click",
+            eventLabel: "Playlist Created",
+          });
           this.clearView();
         }
       }

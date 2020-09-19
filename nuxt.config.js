@@ -48,14 +48,21 @@ export default {
   /*
    ** Nuxt.js dev-modules
    */
-  buildModules: [],
+  buildModules: ["@nuxtjs/google-analytics"],
+  googleAnalytics: {
+    id: "UA-178423300-1",
+    /* debug: {
+      enabled: true,
+      sendHitTask: true
+    } */
+  },
   /*
    ** Nuxt.js modules
    */
   modules: ["@nuxtjs/axios", "@nuxtjs/robots"],
   robots: {
-    UserAgent: '*',
-    Disallow: '/*'
+    UserAgent: "*",
+    Disallow: "/*"
   },
   /*
    ** Build configuration
