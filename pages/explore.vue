@@ -303,7 +303,7 @@ export default {
       if (value) {
         this.fetchingArtists = true;
         let artists = await this.$axios.$get(
-          `/api/spotify/search?query=${value}`
+          `/api/spotify/artist/search?query=${value}`
         );
         this.fetchingArtists = false;
         if (artists) {
@@ -315,7 +315,7 @@ export default {
       if (this.searchedArtists.length > 0) {
         let artistId = this.searchedArtists[0].id;
         let relatedArtists = await this.$axios.$get(
-          `/api/spotify/relatedArtists/${artistId}`
+          `/api/spotify/artist/${artistId}/related`
         );
         this.relatedArtists = relatedArtists;
       }

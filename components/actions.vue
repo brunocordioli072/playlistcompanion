@@ -43,7 +43,7 @@ export default {
   methods: {
     async playTopTrackByArtist(item) {
       this.playerIsPlaying = false;
-      let tracks = await this.$axios.$get(`/api/spotify/topTrack/${item.id}`);
+      let tracks = await this.$axios.$get(`/api/spotify/artist/${item.id}/topTrack`);
       this.sourceArtists = tracks[0].artists.map((a) => a.name);
       this.source = tracks[0].preview_url;
       this.$store.commit("explore/playerSource", tracks[0].preview_url);
