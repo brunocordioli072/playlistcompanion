@@ -196,9 +196,11 @@
 import { mapGetters } from "vuex";
 
 export default {
-  mounted() {
+  async mounted() {
     this.$refs.plyr.player.autoplay = true;
     this.$refs.plyr.player.loop = true;
+    let user = await this.$axios.$get(`/api/spotify/user`);
+    this.$ga.set({ userId: user.id });
   },
   middleware: "authentication",
   data() {

@@ -51,10 +51,10 @@ export default {
   buildModules: ["@nuxtjs/google-analytics"],
   googleAnalytics: {
     id: "UA-178423300-1",
-    /* debug: {
+    debug: {
       enabled: true,
       sendHitTask: true
-    } */
+    }
   },
   /*
    ** Nuxt.js modules
