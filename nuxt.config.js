@@ -62,7 +62,7 @@ export default {
   modules: ["@nuxtjs/axios", "@nuxtjs/robots"],
   robots: {
     UserAgent: "*",
-    Disallow: "/*"
+    Disallow: "/explore"
   },
   /*
    ** Build configuration
