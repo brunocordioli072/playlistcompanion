@@ -60,10 +60,7 @@ export default {
    ** Nuxt.js modules
    */
   modules: ["@nuxtjs/axios", "@nuxtjs/robots"],
-  robots: {
-    UserAgent: "*",
-    Disallow: "/explore"
-  },
+
   /*
    ** Build configuration
    ** See https://nuxtjs.org/api/configuration-build/
