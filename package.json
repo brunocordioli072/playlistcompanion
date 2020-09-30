@@ -6,9 +6,9 @@
   "private": true,
   "scripts": {
     "build": "NODE_ENV=prod nuxt build",
+    "build:client": "genql --endpoint http://localhost:4000/dev/graphql --output ./clients/graphql",
     "start:dev": "NODE_ENV=dev nuxt",
     "start:prod": "NODE_ENV=prod nuxt",
-    "start:build:dev": "NODE_ENV=dev nuxt start",
     "generate": "nuxt generate",
     "test": "jest",
     "deploy": "push-dir --dir=dist --branch=gh-pages --cleanup"
@@ -17,6 +17,7 @@
     "@nuxtjs/axios": "^5.12.2",
     "@nuxtjs/google-analytics": "^2.4.0",
     "ant-design-vue": "^1.6.4",
+    "genql-runtime": "^1.1.27",
     "moment": "^2.27.0",
     "nuxt": "^2.14.0",
     "vue-analytics": "^5.22.1",
@@ -31,6 +32,7 @@
     "@vue/test-utils": "^1.0.3",
     "babel-core": "7.0.0-bridge.0",
     "babel-jest": "^26.1.0",
+    "genql-cli": "^1.1.27",
     "jest": "^26.1.0",
     "push-dir": "^0.4.1",
     "vue-jest": "^3.0.4"
