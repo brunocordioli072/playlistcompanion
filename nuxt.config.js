@@ -1,4 +1,4 @@
-let dev = process.env.NODE_ENV !== "prod";
+let isDev = process.env.NODE_ENV !== "prod";
 export default {
   /*
    ** Nuxt rendering mode
@@ -67,7 +67,7 @@ export default {
    */
   build: {},
   axios: {
-    baseURL: dev
+    baseURL: isDev
       ? "http://localhost:8080"
       : "https://playlistcompanion.herokuapp.com"
   }
