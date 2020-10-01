@@ -1,4 +1,5 @@
-let isDev = process.env.NODE_ENV !== "prod";
+import { ConfigProvider } from "ant-design-vue";
+
 export default {
   /*
    ** Nuxt rendering mode
@@ -14,6 +15,14 @@ export default {
    ** Headers of the page
    ** See https://nuxtjs.org/api/configuration-head
    */
+  env: {
+    WORKER_URL_DEV: "http://localhost:8080/prod",
+    WORKER_URL_PROD:
+      "https://z90gjsb7ua.execute-api.us-east-1.amazonaws.com/prod",
+    BRIDGE_URL_DEV: "http://localhost:4000/prod/graphql",
+    BRIDGE_URL_PROD:
+      "https://ojmfr9w3ea.execute-api.us-east-1.amazonaws.com/prod/graphql"
+  },
   head: {
     htmlAttrs: {
       lang: "en"
@@ -48,7 +57,7 @@ export default {
   /*
    ** Nuxt.js dev-modules
    */
-  buildModules: ["@nuxtjs/google-analytics"],
+  buildModules: ["@nuxtjs/google-analytics", "@nuxtjs/dotenv"],
   googleAnalytics: {
     id: "UA-178423300-1",
     debug: {
@@ -60,15 +69,9 @@ export default {
    ** Nuxt.js modules
    */
   modules: ["@nuxtjs/axios"],
-
   /*
    ** Build configuration
    ** See https://nuxtjs.org/api/configuration-build/
    */
-  build: {},
-  axios: {
-    baseURL: isDev
-      ? "http://localhost:8080"
-      : "https://playlistcompanion.herokuapp.com"
-  }
+  build: {}
 };

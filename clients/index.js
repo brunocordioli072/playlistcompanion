@@ -1,15 +1,15 @@
 const { createClient } = require("./graphql");
 const vuexLocal = localStorage.getItem("vuex");
 const vuex = JSON.parse(vuexLocal);
-let isDev = process.env.NODE_ENV !== "prod";
+let isDev = process.env.NODE_ENV !== "production";
 module.exports = {
   createGraphQLClient: () => {
     return createClient({
       url: isDev
-        ? "http://localhost:4000/prod/graphql"
-        : "https://playlistcompanion.herokuapp.com",
+        ? process.env.BRIDGE_URL_DEV
+        : process.env.BRIDGE_URL_PROD,
       headers: {
-        authorization: vuex.client.access_token,
+        Authorization: vuex &&  vuex.client && vuex.client.access_token ? vuex.client.access_token : "",
       },
     });
   },

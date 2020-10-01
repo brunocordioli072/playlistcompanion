@@ -3,19 +3,31 @@
     <a-icon
       v-show="search"
       :type="'search'"
-      :style="{ fontSize: '20px', color: '#1890ff'}"
+      :style="{ fontSize: '20px', color: '#1890ff' }"
       @click="updateSearchedArtist(item)"
     />
     <a-divider type="vertical" />
     <a-icon
-      :type="!hasArtistOnPlaylist ? 'plus-circle': 'minus-circle'"
-      :style="!hasArtistOnPlaylist ? { fontSize: '20px', color: '#1890ff' }: { fontSize: '20px', color: 'red' }"
-      @click="!hasArtistOnPlaylist ? addSelectedArtists(item) : removeSelectedArtists(item)"
+      :type="!hasArtistOnPlaylist ? 'plus-circle' : 'minus-circle'"
+      :style="
+        !hasArtistOnPlaylist
+          ? { fontSize: '20px', color: '#1890ff' }
+          : { fontSize: '20px', color: 'red' }
+      "
+      @click="
+        !hasArtistOnPlaylist
+          ? addSelectedArtists(item)
+          : removeSelectedArtists(item)
+      "
     />
     <a-divider type="vertical" />
     <a-icon
       :type="'play-circle'"
-      :style="!canBePlayed ? { fontSize: '20px', color: 'grey' }: { fontSize: '20px', color: 'green' }"
+      :style="
+        !canBePlayed
+          ? { fontSize: '20px', color: 'grey' }
+          : { fontSize: '20px', color: 'green' }
+      "
       @click="!canBePlayed ? playTopTrackByArtist(item) : stopPlayer()"
     />
     <!-- <a-divider type="vertical" />
@@ -28,6 +40,8 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { createGraphQLClient } from "../clients";
+const client = createGraphQLClient();
 
 export default {
   props: {
@@ -43,7 +57,13 @@ export default {
   methods: {
     async playTopTrackByArtist(item) {
       this.playerIsPlaying = false;
-      let tracks = await this.$axios.$get(`/api/spotify/artist/${item.id}/topTrack`);
+      let res = await client.query({
+        artistTopTracks: [
+          { artistId: item.id },
+          { preview_url: true, artists: { name: true } },
+        ],
+      });
+      let tracks = res.artistTopTracks;
       this.sourceArtists = tracks[0].artists.map((a) => a.name);
       this.source = tracks[0].preview_url;
       this.$store.commit("explore/playerSource", tracks[0].preview_url);

@@ -231,22 +231,26 @@
 </template>
 
 <script>
+import { everything } from "genql-runtime";
 import { mapGetters } from "vuex";
-import clientBuilder from "../clients";
-const client = clientBuilder();
+import { createGraphQLClient } from "../clients";
+const client = createGraphQLClient();
 
 export default {
   async mounted() {
     this.$refs.plyr.player.autoplay = true;
     this.$refs.plyr.player.loop = true;
-    let user = await this.$axios.$get(`/api/spotify/user`);
-    this.$ga.set({ userId: user.id });
-    let res = await client.query({ artists: [{ name: "a" }, { name: true }] });
-    console.log(res);
+    let { spotifyUser } = await client.query({
+      spotifyUser: {
+        id: true,
+      },
+    });
+    this.$ga.set({ userId: spotifyUser.id });
   },
   middleware: "authentication",
   data() {
     return {
+      searchTimer: null,
       modalVisible: false,
       playlistName: null,
       creatingPlaylist: false,
@@ -323,17 +327,20 @@ export default {
     },
     async createPlaylist() {
       this.creatingPlaylist = true;
-      let playlist = await this.$axios.$post(
-        `/api/spotify/playlist/${this.playlistName}`
-      );
+      let res = await client.mutation({
+        insertPlaylist: [{ playlistName: this.playlistName }, { id: true }],
+      });
+      let playlist = res.insertPlaylist;
       if (playlist) {
-        let res = await this.$axios.$post(
-          `/api/spotify/playlist/${playlist.id}/tracks`,
-          {
-            artistIds: this.selectedArtists.map((a) => a.id),
-          }
-        );
-        if (res) {
+        try {
+          await client.mutation({
+            insertArtistsToPlaylist: [
+              {
+                artistIds: this.selectedArtists.map((a) => a.id),
+                playlistId: playlist.id,
+              },
+            ],
+          });
           this.$notification.open({
             message: "Playlist created!!!",
             description: `Playlist added to your spotify with the name ${this.playlistName}`,
@@ -345,28 +352,81 @@ export default {
             eventLabel: "Playlist Created",
           });
           this.clearView();
+        } catch (e) {
+          this.$notification.open({
+            message: "Error",
+            description: `Some error has occured, please try again...`,
+            icon: <a-icon type="monitor" style="color: red" />,
+          });
         }
       }
     },
     async fetchArtists(value) {
       if (value) {
-        this.fetchingArtists = true;
-        let artists = await this.$axios.$get(
-          `/api/spotify/artist/search?query=${value}`
-        );
-        this.fetchingArtists = false;
-        if (artists) {
-          this.artists = artists;
+        const enrichQuery = (query) => {
+          return (
+            query.match(new RegExp("([^?=&]+)(=([^&]*))?", "g")) || []
+          ).reduce(function (result, each, n, every) {
+            let [key, value] = each.split(":");
+            result[key] = value;
+            return result;
+          }, {});
+        };
+        const search = async () => {
+          let params = enrichQuery(value);
+          let res;
+          let artistSubFields = {
+            id: true,
+            name: true,
+            genres: true,
+            popularity: true,
+            images: { url: true },
+            followers: { total: true },
+            external_urls: { spotify: true },
+          };
+          if (!params.artist && !params.track) {
+            res = await client.query({
+              artists: [{ query: value }, artistSubFields],
+            });
+          } else if (params.artist) {
+            res = await client.query({
+              artists: [{ name: params.artist }, artistSubFields],
+            });
+          } else if (params.track) {
+            res = await client.query({
+              artists: [{ track: params.track }, artistSubFields],
+            });
+          }
+          let artists = res.artists;
+          if (artists) {
+            this.artists = artists;
+          }
         }
+
+        this.artists = []
+        this.fetchingArtists = true;
+        clearTimeout(this.searchTimer);
+        this.searchTimer = setTimeout(search, 1000);
       }
     },
     async fetchRelatedArtists() {
       if (this.searchedArtists.length > 0) {
         let artistId = this.searchedArtists[0].id;
-        let relatedArtists = await this.$axios.$get(
-          `/api/spotify/artist/${artistId}/related`
-        );
-        this.relatedArtists = relatedArtists;
+        let { artistsRelatedByArtistId } = await client.query({
+          artistsRelatedByArtistId: [
+            { artistId },
+            {
+              id: true,
+              name: true,
+              genres: true,
+              popularity: true,
+              images: { url: true },
+              followers: { total: true },
+              external_urls: { spotify: true },
+            },
+          ],
+        });
+        this.relatedArtists = artistsRelatedByArtistId;
       }
     },
     getImageFromArtist(item) {
