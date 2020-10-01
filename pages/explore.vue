@@ -406,7 +406,7 @@ export default {
         this.artists = []
         this.fetchingArtists = true;
         clearTimeout(this.searchTimer);
-        this.searchTimer = setTimeout(search, 1000);
+        this.searchTimer = setTimeout(search, 300);
       }
     },
     async fetchRelatedArtists() {
