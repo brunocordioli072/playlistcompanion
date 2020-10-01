@@ -6,14 +6,14 @@
         <p>
           For people who have
           <a target="_blank" href="https://www.spotify.com/">spotify</a>,
-          <b>PlaylistCompanion</b> is your
-          best friend when the subject is music.
+          <b>PlaylistCompanion</b> is your best friend when the subject is
+          music.
           <b>
-            It helps you see all your
-            favorite musicians and see all the musicians that are related to them!
+            It helps you see all your favorite musicians and see all the
+            musicians that are related to them!
           </b>
-          And based on your choices it creates a playlist with the musics of the musicians
-          you chose.
+          And based on your choices it creates a playlist with the musics of the
+          musicians you chose.
           <b>Its pretty awesome!</b> You just have to click on the login button
           right above login with your spotify account and give it a try!
         </p>
@@ -23,8 +23,11 @@
           type="primary"
           id="login"
           @click="$router.push('/explore')"
-        >Go explore!</a-button>
-        <a-button v-else size="large" type="primary" id="login" @click="login">login</a-button>
+          >Go explore!</a-button
+        >
+        <a-button v-else size="large" type="primary" id="login" @click="login"
+          >login</a-button
+        >
       </div>
     </a-space>
   </div>
@@ -41,9 +44,7 @@ export default {
         eventAction: "Click",
         eventLabel: "Tried to Login",
       });
-      window.location.replace(
-        `${this.$axios.defaults.baseURL}/auth/spotify/login`
-      );
+      window.location.replace(`${process.env.WORKER_URL}/auth/spotify/login`);
     },
   },
   computed: {

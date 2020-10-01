@@ -7,7 +7,7 @@
         :value="search"
         size="large"
         placeholder="Search anything related to music :)"
-        style="width: 50vw; min-width: 270px;"
+        style="width: 50vw; min-width: 270px"
         :filter-option="false"
         :not-found-content="fetchingArtists ? undefined : null"
         @search="fetchArtists"
@@ -27,14 +27,21 @@
                 style="margin-left: 5px"
                 v-for="genre in item.genres"
                 :key="genre"
-                :color="genre === 'loser' ? 'volcano' : genre.length > 5 ? 'geekblue' : 'green'"
-              >{{ genre.toUpperCase() }}</a-tag>
+                :color="
+                  genre === 'loser'
+                    ? 'volcano'
+                    : genre.length > 5
+                    ? 'geekblue'
+                    : 'green'
+                "
+                >{{ genre.toUpperCase() }}</a-tag
+              >
             </div>
           </a-space>
         </a-select-option>
       </a-select>
 
-      <div style="text-align: left !important; max-height: 400px;">
+      <div style="text-align: left !important; max-height: 400px">
         <a-list
           style="width: 81vw"
           v-if="searchedArtists.length > 0"
@@ -45,20 +52,31 @@
             <a-list-item-meta>
               <div slot="title">
                 <b>Selected:</b>
-                <a target="_blank" :href="item.external_urls.spotify">{{ item.name }}</a>
+                <a target="_blank" :href="item.external_urls.spotify">{{
+                  item.name
+                }}</a>
               </div>
               <div slot="description">
                 <a-tag
                   class="tag"
                   v-for="genre in item.genres"
                   :key="genre"
-                  :color="genre.length < 5 ? 'volcano' : genre.length > 5 ? 'violet' : 'green'"
-                >{{ genre.toUpperCase() }}</a-tag>
-                <a-tag
-                  class="tag"
-                  :color="'purple'"
-                >Followers: {{ numberToLocaleFormat(item.followers.total) }}</a-tag>
-                <a-tag class="tag" :color="'blue'">Popularity: {{ item.popularity }}</a-tag>
+                  :color="
+                    genre.length < 5
+                      ? 'volcano'
+                      : genre.length > 5
+                      ? 'violet'
+                      : 'green'
+                  "
+                  >{{ genre.toUpperCase() }}</a-tag
+                >
+                <a-tag class="tag" :color="'purple'"
+                  >Followers:
+                  {{ numberToLocaleFormat(item.followers.total) }}</a-tag
+                >
+                <a-tag class="tag" :color="'blue'"
+                  >Popularity: {{ item.popularity }}</a-tag
+                >
               </div>
               <a-avatar
                 :size="64"
@@ -67,29 +85,36 @@
                 :src="getImageFromArtist(item)"
               />
             </a-list-item-meta>
-            <div style="margin: 5px;" slot="actions">
+            <div style="margin: 5px" slot="actions">
               <c-actions :search="false" :item="item"></c-actions>
             </div>
           </a-list-item>
         </a-list>
       </div>
 
-      <div :style="!isMobile ? 'width: 81vw': 'width: 95vw'">
-        <a-space v-if="relatedArtists.length > 0" direction="vertical" align="center">
+      <div :style="!isMobile ? 'width: 81vw' : 'width: 95vw'">
+        <a-space
+          v-if="relatedArtists.length > 0"
+          direction="vertical"
+          align="center"
+        >
           <div style="margin: 10px">
             <span style="text-align: left">
               <a-icon type="arrow-down" />&nbsp;Artists related to
               <a
                 target="_blank"
                 :href="this.searchedArtists[0].external_urls.spotify"
-              >{{ this.searchedArtists[0].name}}</a>
+                >{{ this.searchedArtists[0].name }}</a
+              >
               <a-icon type="arrow-down" />
             </span>
           </div>
           <a-table
-            :style="!isMobile ? 'width: 81vw': 'width: 95vw'"
-            :size="!isMobile? 'default' : 'small'"
-            :columns="!isMobile ? relatedArtistsColumns : relatedArtistsColumnsMobile"
+            :style="!isMobile ? 'width: 81vw' : 'width: 95vw'"
+            :size="!isMobile ? 'default' : 'small'"
+            :columns="
+              !isMobile ? relatedArtistsColumns : relatedArtistsColumnsMobile
+            "
             :pagination="{ pageSize: 5 }"
             :data-source="relatedArtists"
           >
@@ -97,14 +122,23 @@
               <a-avatar slot="avatar" :src="getImageFromArtist(item)" />
             </span>
             <div slot="name" slot-scope="name, item">
-              <a target="_blank" :href="item.external_urls.spotify">{{ item.name }}</a>
+              <a target="_blank" :href="item.external_urls.spotify">{{
+                item.name
+              }}</a>
             </div>
             <span slot="genres" slot-scope="genres">
               <a-tag
                 v-for="genre in genres"
                 :key="genre"
-                :color="genre === 'loser' ? 'volcano' : genre.length > 5 ? 'geekblue' : 'green'"
-              >{{ genre.toUpperCase() }}</a-tag>
+                :color="
+                  genre === 'loser'
+                    ? 'volcano'
+                    : genre.length > 5
+                    ? 'geekblue'
+                    : 'green'
+                "
+                >{{ genre.toUpperCase() }}</a-tag
+              >
             </span>
             <div slot="action" slot-scope="action, item">
               <c-actions :search="true" :item="item"></c-actions>
@@ -115,8 +149,9 @@
           v-show="selectedArtists.length > 0"
           type="primary"
           block
-          @click="modalVisible = true;"
-        >Create Playlist</a-button>
+          @click="modalVisible = true"
+          >Create Playlist</a-button
+        >
       </div>
       <div v-show="selectedArtists.length > 0">
         <span style="text-align: left">
@@ -126,7 +161,7 @@
         <a-timeline>
           <a-space align="center">
             <a-list
-              style="width: 81vw;"
+              style="width: 81vw"
               :grid="{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 3, xl: 3, xxl: 3 }"
               :data-source="selectedArtists"
             >
@@ -135,30 +170,34 @@
                   <div slot="title">
                     <a-space direction="vertical">
                       <a-avatar slot="avatar" :src="getImageFromArtist(item)" />
-                      <div>{{item.name}}</div>
+                      <div>{{ item.name }}</div>
                     </a-space>
                   </div>
                   <a-space direction="vertical">
                     <div>
-                      <a-tag
-                        class="tag"
-                        :color="'purple'"
-                      >Followers: {{ numberToLocaleFormat(item.followers.total) }}</a-tag>
-                      <a-tag class="tag" :color="'blue'">Popularity: {{ item.popularity }}</a-tag>
+                      <a-tag class="tag" :color="'purple'"
+                        >Followers:
+                        {{ numberToLocaleFormat(item.followers.total) }}</a-tag
+                      >
+                      <a-tag class="tag" :color="'blue'"
+                        >Popularity: {{ item.popularity }}</a-tag
+                      >
                     </div>
                     <div>
                       <a-button
                         size="small"
                         type="primary"
                         @click="updateSearchedArtist(item)"
-                      >Search</a-button>
+                        >Search</a-button
+                      >
                       <a-button
                         style="margin: 5px"
                         size="small"
                         type="dashed"
                         :color="'red'"
                         @click="removeSelectedArtists(item)"
-                      >Remove</a-button>
+                        >Remove</a-button
+                      >
                     </div>
                   </a-space>
                 </a-card>
@@ -168,7 +207,7 @@
         </a-timeline>
       </div>
     </a-space>
-    <vue-plyr ref="plyr" style="display: none; visibility: hidden;">
+    <vue-plyr ref="plyr" style="display: none; visibility: hidden">
       <audio>
         <source type="audio/mp3" />
       </audio>
@@ -179,13 +218,12 @@
       okText="Create"
       :confirm-loading="creatingPlaylist"
       @ok="createPlaylist"
-      @cancel="modalVisible =false"
+      @cancel="modalVisible = false"
     >
       <a-input v-model="playlistName" placeholder="Name of your playlist" />
       <p style="text-align: justify">
         This playlist will be added to
-        <b>your spotify account</b> with the
-        <b>10</b> top tracks of
+        <b>your spotify account</b> with the <b>10</b> top tracks of
         <b>each artist</b> you selected!
       </p>
     </a-modal>
@@ -193,18 +231,26 @@
 </template>
 
 <script>
+import { everything } from "genql-runtime";
 import { mapGetters } from "vuex";
+import { createGraphQLClient } from "../clients";
+const client = createGraphQLClient();
 
 export default {
   async mounted() {
     this.$refs.plyr.player.autoplay = true;
     this.$refs.plyr.player.loop = true;
-    let user = await this.$axios.$get(`/api/spotify/user`);
-    this.$ga.set({ userId: user.id });
+    let { spotifyUser } = await client.query({
+      spotifyUser: {
+        id: true,
+      },
+    });
+    this.$ga.set({ userId: spotifyUser.id });
   },
   middleware: "authentication",
   data() {
     return {
+      searchTimer: null,
       modalVisible: false,
       playlistName: null,
       creatingPlaylist: false,
@@ -281,17 +327,20 @@ export default {
     },
     async createPlaylist() {
       this.creatingPlaylist = true;
-      let playlist = await this.$axios.$post(
-        `/api/spotify/playlist/${this.playlistName}`
-      );
+      let res = await client.mutation({
+        insertPlaylist: [{ playlistName: this.playlistName }, { id: true }],
+      });
+      let playlist = res.insertPlaylist;
       if (playlist) {
-        let res = await this.$axios.$post(
-          `/api/spotify/playlist/${playlist.id}/tracks`,
-          {
-            artistIds: this.selectedArtists.map((a) => a.id),
-          }
-        );
-        if (res) {
+        try {
+          await client.mutation({
+            insertArtistsToPlaylist: [
+              {
+                artistIds: this.selectedArtists.map((a) => a.id),
+                playlistId: playlist.id,
+              },
+            ],
+          });
           this.$notification.open({
             message: "Playlist created!!!",
             description: `Playlist added to your spotify with the name ${this.playlistName}`,
@@ -303,28 +352,81 @@ export default {
             eventLabel: "Playlist Created",
           });
           this.clearView();
+        } catch (e) {
+          this.$notification.open({
+            message: "Error",
+            description: `Some error has occured, please try again...`,
+            icon: <a-icon type="monitor" style="color: red" />,
+          });
         }
       }
     },
     async fetchArtists(value) {
       if (value) {
-        this.fetchingArtists = true;
-        let artists = await this.$axios.$get(
-          `/api/spotify/artist/search?query=${value}`
-        );
-        this.fetchingArtists = false;
-        if (artists) {
-          this.artists = artists;
+        const enrichQuery = (query) => {
+          return (
+            query.match(new RegExp("([^?=&]+)(=([^&]*))?", "g")) || []
+          ).reduce(function (result, each, n, every) {
+            let [key, value] = each.split(":");
+            result[key] = value;
+            return result;
+          }, {});
+        };
+        const search = async () => {
+          let params = enrichQuery(value);
+          let res;
+          let artistSubFields = {
+            id: true,
+            name: true,
+            genres: true,
+            popularity: true,
+            images: { url: true },
+            followers: { total: true },
+            external_urls: { spotify: true },
+          };
+          if (!params.artist && !params.track) {
+            res = await client.query({
+              artists: [{ query: value }, artistSubFields],
+            });
+          } else if (params.artist) {
+            res = await client.query({
+              artists: [{ name: params.artist }, artistSubFields],
+            });
+          } else if (params.track) {
+            res = await client.query({
+              artists: [{ track: params.track }, artistSubFields],
+            });
+          }
+          let artists = res.artists;
+          if (artists) {
+            this.artists = artists;
+          }
         }
+
+        this.artists = []
+        this.fetchingArtists = true;
+        clearTimeout(this.searchTimer);
+        this.searchTimer = setTimeout(search, 1000);
       }
     },
     async fetchRelatedArtists() {
       if (this.searchedArtists.length > 0) {
         let artistId = this.searchedArtists[0].id;
-        let relatedArtists = await this.$axios.$get(
-          `/api/spotify/artist/${artistId}/related`
-        );
-        this.relatedArtists = relatedArtists;
+        let { artistsRelatedByArtistId } = await client.query({
+          artistsRelatedByArtistId: [
+            { artistId },
+            {
+              id: true,
+              name: true,
+              genres: true,
+              popularity: true,
+              images: { url: true },
+              followers: { total: true },
+              external_urls: { spotify: true },
+            },
+          ],
+        });
+        this.relatedArtists = artistsRelatedByArtistId;
       }
     },
     getImageFromArtist(item) {
@@ -350,6 +452,7 @@ export default {
       playerIsPlaying: "explore/playerIsPlaying",
       playerSource: "explore/playerSource",
       isMobile: "client/isMobile",
+      access_token: "client/access_token",
     }),
     search: {
       get: function () {
