@@ -1,7 +1,7 @@
 <template>
   <div>
     <c-header></c-header>
-    <div style="min-height: 84.8vh;" class="content">
+    <div style="min-height: 84.8vh" class="content">
       <Nuxt />
     </div>
     <c-footer></c-footer>
@@ -59,15 +59,6 @@ export default {
         }
       }
     },
-    async refreshToken() {
-      let res = await this.$axios.$get(
-        `/auth/spotify/refresh_token?
-        refresh_token=${this.$store.getters["client/refresh_token"]}`
-      );
-      this.$store.commit("client/setAccess_token", res.access_token);
-      this.$store.commit("client/setExpires_in", 3600 * 1000 + +moment());
-      this.$axios.setToken(this.$store.getters["client/access_token"]);
-    },
   },
   computed: {
     ...mapGetters({
@@ -81,10 +72,8 @@ export default {
       this.setAuth();
     },
     isAuthenticated: async function () {
-      if (!this.isAuthenticated && this.refresh_token) {
-        await this.refreshToken();
-      } else {
-        this.$router.push("/");
+      if (!this.isAuthenticated) {
+        this.$router.go("/");
       }
     },
   },

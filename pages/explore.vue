@@ -150,7 +150,6 @@ export default {
       }
     },
   },
-  middleware: "authentication",
   async mounted() {
     this.$refs.plyr.player.autoplay = true;
     this.$refs.plyr.player.loop = true;

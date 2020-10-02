@@ -3,4 +3,5 @@ export default function({ app, store, redirect }) {
   if (!store.state.isAuthenticated && app.router.history.current.fullPath != "/") {
     return redirect("/");
   } 
+  
 }
