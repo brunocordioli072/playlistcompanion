@@ -40,7 +40,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { createGraphQLClient } from "../clients";
+import { createGraphQLClient } from "../../clients";
 const client = createGraphQLClient();
 
 export default {
@@ -57,12 +57,20 @@ export default {
   methods: {
     async playTopTrackByArtist(item) {
       this.playerIsPlaying = false;
-      let res = await client.query({
-        artistTopTracks: [
-          { artistId: item.id },
-          { preview_url: true, artists: { name: true } },
-        ],
-      });
+      try {
+        let res = await client.query({
+          artistTopTracks: [
+            { artistId: item.id },
+            { preview_url: true, artists: { name: true } },
+          ],
+        });
+      } catch (e) {
+        this.$notification.open({
+          message: "Error",
+          description: `Some error has occured, please try again or refresh the page...`,
+          icon: <a-icon type="monitor" style="color: red" />,
+        });
+      }
       let tracks = res.artistTopTracks;
       this.sourceArtists = tracks[0].artists.map((a) => a.name);
       this.source = tracks[0].preview_url;

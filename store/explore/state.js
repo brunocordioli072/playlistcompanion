@@ -7,4 +7,6 @@ export default () => ({
   playerSource: null,
   playerIsLoading: false,
   playerIsPlaying: false,
+  creatingPlaylist: false,
+  modalVisible: false,
 });

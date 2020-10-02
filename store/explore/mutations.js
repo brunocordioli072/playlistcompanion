@@ -26,4 +26,10 @@ export default {
   playerIsPlaying(state, playerIsPlaying) {
     state.playerIsPlaying = playerIsPlaying;
   },
+  modalVisible(state, modalVisible) {
+    state.modalVisible = modalVisible;
+  },
+  creatingPlaylist(state, creatingPlaylist) {
+    state.creatingPlaylist = creatingPlaylist;
+  },
 };

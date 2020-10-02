@@ -28,4 +28,10 @@ export default {
   playerIsPlaying(state) {
     return state.playerIsPlaying;
   },
+  modalVisible(state) {
+    return state.modalVisible;
+  },
+  creatingPlaylist(state) {
+    return state.creatingPlaylist;
+  }
 };

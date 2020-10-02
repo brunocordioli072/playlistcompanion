@@ -1,95 +1,10 @@
 <template>
   <div>
     <a-space direction="vertical">
-      <a-select
-        label-in-value
-        show-search
-        :value="search"
-        size="large"
-        placeholder="Search anything related to music :)"
-        style="width: 50vw; min-width: 270px"
-        :filter-option="false"
-        :not-found-content="fetchingArtists ? undefined : null"
-        @search="fetchArtists"
-        @change="handleChange"
-      >
-        <a-spin v-if="fetchingArtists" slot="notFoundContent" size="small" />
-        <a-select-option
-          v-for="(item, index) in artists"
-          :key="index"
-          @click="updateSearchedArtist(item)"
-        >
-          <a-space direction="horizontal">
-            <a-avatar slot="avatar" :src="getImageFromArtist(item)" />
-            <b style="margin-left: 10px">{{ item.name }}</b>
-            <div v-if="!isMobile">
-              <a-tag
-                style="margin-left: 5px"
-                v-for="genre in item.genres"
-                :key="genre"
-                :color="
-                  genre === 'loser'
-                    ? 'volcano'
-                    : genre.length > 5
-                    ? 'geekblue'
-                    : 'green'
-                "
-                >{{ genre.toUpperCase() }}</a-tag
-              >
-            </div>
-          </a-space>
-        </a-select-option>
-      </a-select>
+      <c-search-artist></c-search-artist>
 
       <div style="text-align: left !important; max-height: 400px">
-        <a-list
-          style="width: 81vw"
-          v-if="searchedArtists.length > 0"
-          item-layout="horizontal"
-          :data-source="searchedArtists"
-        >
-          <a-list-item slot="renderItem" slot-scope="item">
-            <a-list-item-meta>
-              <div slot="title">
-                <b>Selected:</b>
-                <a target="_blank" :href="item.external_urls.spotify">{{
-                  item.name
-                }}</a>
-              </div>
-              <div slot="description">
-                <a-tag
-                  class="tag"
-                  v-for="genre in item.genres"
-                  :key="genre"
-                  :color="
-                    genre.length < 5
-                      ? 'volcano'
-                      : genre.length > 5
-                      ? 'violet'
-                      : 'green'
-                  "
-                  >{{ genre.toUpperCase() }}</a-tag
-                >
-                <a-tag class="tag" :color="'purple'"
-                  >Followers:
-                  {{ numberToLocaleFormat(item.followers.total) }}</a-tag
-                >
-                <a-tag class="tag" :color="'blue'"
-                  >Popularity: {{ item.popularity }}</a-tag
-                >
-              </div>
-              <a-avatar
-                :size="64"
-                style="margin-left: 20px"
-                slot="avatar"
-                :src="getImageFromArtist(item)"
-              />
-            </a-list-item-meta>
-            <div style="margin: 5px" slot="actions">
-              <c-actions :search="false" :item="item"></c-actions>
-            </div>
-          </a-list-item>
-        </a-list>
+        <c-searched-artists></c-searched-artists>
       </div>
 
       <div :style="!isMobile ? 'width: 81vw' : 'width: 95vw'">
@@ -109,41 +24,7 @@
               <a-icon type="arrow-down" />
             </span>
           </div>
-          <a-table
-            :style="!isMobile ? 'width: 81vw' : 'width: 95vw'"
-            :size="!isMobile ? 'default' : 'small'"
-            :columns="
-              !isMobile ? relatedArtistsColumns : relatedArtistsColumnsMobile
-            "
-            :pagination="{ pageSize: 5 }"
-            :data-source="relatedArtists"
-          >
-            <span slot="images" slot-scope="images, item">
-              <a-avatar slot="avatar" :src="getImageFromArtist(item)" />
-            </span>
-            <div slot="name" slot-scope="name, item">
-              <a target="_blank" :href="item.external_urls.spotify">{{
-                item.name
-              }}</a>
-            </div>
-            <span slot="genres" slot-scope="genres">
-              <a-tag
-                v-for="genre in genres"
-                :key="genre"
-                :color="
-                  genre === 'loser'
-                    ? 'volcano'
-                    : genre.length > 5
-                    ? 'geekblue'
-                    : 'green'
-                "
-                >{{ genre.toUpperCase() }}</a-tag
-              >
-            </span>
-            <div slot="action" slot-scope="action, item">
-              <c-actions :search="true" :item="item"></c-actions>
-            </div>
-          </a-table>
+          <c-related-artists></c-related-artists>
         </a-space>
         <a-button
           v-show="selectedArtists.length > 0"
@@ -160,49 +41,7 @@
         </span>
         <a-timeline>
           <a-space align="center">
-            <a-list
-              style="width: 81vw"
-              :grid="{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 3, xl: 3, xxl: 3 }"
-              :data-source="selectedArtists"
-            >
-              <a-list-item slot="renderItem" slot-scope="item">
-                <a-card>
-                  <div slot="title">
-                    <a-space direction="vertical">
-                      <a-avatar slot="avatar" :src="getImageFromArtist(item)" />
-                      <div>{{ item.name }}</div>
-                    </a-space>
-                  </div>
-                  <a-space direction="vertical">
-                    <div>
-                      <a-tag class="tag" :color="'purple'"
-                        >Followers:
-                        {{ numberToLocaleFormat(item.followers.total) }}</a-tag
-                      >
-                      <a-tag class="tag" :color="'blue'"
-                        >Popularity: {{ item.popularity }}</a-tag
-                      >
-                    </div>
-                    <div>
-                      <a-button
-                        size="small"
-                        type="primary"
-                        @click="updateSearchedArtist(item)"
-                        >Search</a-button
-                      >
-                      <a-button
-                        style="margin: 5px"
-                        size="small"
-                        type="dashed"
-                        :color="'red'"
-                        @click="removeSelectedArtists(item)"
-                        >Remove</a-button
-                      >
-                    </div>
-                  </a-space>
-                </a-card>
-              </a-list-item>
-            </a-list>
+            <c-selected-artists></c-selected-artists>
           </a-space>
         </a-timeline>
       </div>
@@ -212,21 +51,7 @@
         <source type="audio/mp3" />
       </audio>
     </vue-plyr>
-    <a-modal
-      title="The Playlist Maker"
-      :visible="modalVisible"
-      okText="Create"
-      :confirm-loading="creatingPlaylist"
-      @ok="createPlaylist"
-      @cancel="modalVisible = false"
-    >
-      <a-input v-model="playlistName" placeholder="Name of your playlist" />
-      <p style="text-align: justify">
-        This playlist will be added to
-        <b>your spotify account</b> with the <b>10</b> top tracks of
-        <b>each artist</b> you selected!
-      </p>
-    </a-modal>
+    <c-create-playlist></c-create-playlist>
   </div>
 </template>
 
@@ -237,239 +62,12 @@ import { createGraphQLClient } from "../clients";
 const client = createGraphQLClient();
 
 export default {
-  async mounted() {
-    this.$refs.plyr.player.autoplay = true;
-    this.$refs.plyr.player.loop = true;
-    let { spotifyUser } = await client.query({
-      spotifyUser: {
-        id: true,
-      },
-    });
-    this.$ga.set({ userId: spotifyUser.id });
-  },
-  middleware: "authentication",
-  data() {
-    return {
-      searchTimer: null,
-      modalVisible: false,
-      playlistName: null,
-      creatingPlaylist: false,
-      fetchingArtists: false,
-      relatedArtistsColumns: [
-        {
-          dataIndex: "images",
-          key: "images",
-          title: "",
-          align: "center",
-          scopedSlots: { customRender: "images" },
-        },
-        {
-          title: "Name",
-          dataIndex: "name",
-          align: "center",
-          key: "name",
-          scopedSlots: { customRender: "name" },
-        },
-        {
-          title: "Genres",
-          key: "genres",
-          align: "center",
-          dataIndex: "genres",
-          scopedSlots: { customRender: "genres" },
-        },
-        {
-          title: "Action",
-          key: "action",
-          align: "center",
-          scopedSlots: { customRender: "action" },
-        },
-      ],
-      relatedArtistsColumnsMobile: [
-        {
-          dataIndex: "images",
-          key: "images",
-          title: "",
-          align: "center",
-          scopedSlots: { customRender: "images" },
-        },
-        {
-          title: "Name",
-          dataIndex: "name",
-          align: "center",
-          key: "name",
-          scopedSlots: { customRender: "name" },
-        },
-        {
-          title: "Action",
-          key: "action",
-          align: "center",
-          scopedSlots: { customRender: "action" },
-        },
-      ],
-    };
-  },
-
-  methods: {
-    handleChange(search) {
-      Object.assign(this, {
-        search,
-      });
-    },
-    clearView() {
-      this.creatingPlaylist = false;
-      this.modalVisible = false;
-      this.playlistName = null;
-      this.search = [];
-      this.artists = [];
-      this.searchedArtists = [];
-      this.selectedArtists = [];
-      this.relatedArtists = [];
-    },
-    async createPlaylist() {
-      this.creatingPlaylist = true;
-      let res = await client.mutation({
-        insertPlaylist: [{ playlistName: this.playlistName }, { id: true }],
-      });
-      let playlist = res.insertPlaylist;
-      if (playlist) {
-        try {
-          await client.mutation({
-            insertArtistsToPlaylist: [
-              {
-                artistIds: this.selectedArtists.map((a) => a.id),
-                playlistId: playlist.id,
-              },
-            ],
-          });
-          this.$notification.open({
-            message: "Playlist created!!!",
-            description: `Playlist added to your spotify with the name ${this.playlistName}`,
-            icon: <a-icon type="smile" style="color: #108ee9" />,
-          });
-          this.$ga.event({
-            eventCategory: "Button",
-            eventAction: "Click",
-            eventLabel: "Playlist Created",
-          });
-          this.clearView();
-        } catch (e) {
-          this.$notification.open({
-            message: "Error",
-            description: `Some error has occured, please try again...`,
-            icon: <a-icon type="monitor" style="color: red" />,
-          });
-        }
-      }
-    },
-    async fetchArtists(value) {
-      if (value) {
-        const enrichQuery = (query) => {
-          return (
-            query.match(new RegExp("([^?=&]+)(=([^&]*))?", "g")) || []
-          ).reduce(function (result, each, n, every) {
-            let [key, value] = each.split(":");
-            result[key] = value;
-            return result;
-          }, {});
-        };
-        const search = async () => {
-          let params = enrichQuery(value);
-          let res;
-          let artistSubFields = {
-            id: true,
-            name: true,
-            genres: true,
-            popularity: true,
-            images: { url: true },
-            followers: { total: true },
-            external_urls: { spotify: true },
-          };
-          if (!params.artist && !params.track) {
-            res = await client.query({
-              artists: [{ query: value }, artistSubFields],
-            });
-          } else if (params.artist) {
-            res = await client.query({
-              artists: [{ name: params.artist }, artistSubFields],
-            });
-          } else if (params.track) {
-            res = await client.query({
-              artists: [{ track: params.track }, artistSubFields],
-            });
-          }
-          let artists = res.artists;
-          if (artists) {
-            this.artists = artists;
-          }
-        }
-
-        this.artists = []
-        this.fetchingArtists = true;
-        clearTimeout(this.searchTimer);
-        this.searchTimer = setTimeout(search, 300);
-      }
-    },
-    async fetchRelatedArtists() {
-      if (this.searchedArtists.length > 0) {
-        let artistId = this.searchedArtists[0].id;
-        let { artistsRelatedByArtistId } = await client.query({
-          artistsRelatedByArtistId: [
-            { artistId },
-            {
-              id: true,
-              name: true,
-              genres: true,
-              popularity: true,
-              images: { url: true },
-              followers: { total: true },
-              external_urls: { spotify: true },
-            },
-          ],
-        });
-        this.relatedArtists = artistsRelatedByArtistId;
-      }
-    },
-    getImageFromArtist(item) {
-      return item.images && item.images.length > 0 ? item.images[0].url : "";
-    },
-    removeSelectedArtists(item) {
-      this.selectedArtists = this.selectedArtists.filter((a) => a != item);
-    },
-    updateSearchedArtist(item) {
-      this.searchedArtists = [item];
-    },
-    removeSearchedArtist(item) {
-      this.searchedArtists = this.searchedArtists.filter((a) => a != item);
-    },
-    numberToLocaleFormat(number) {
-      return parseFloat(number.toFixed(0)).toLocaleString("pt-br", {
-        minimumFractionDigits: 0,
-      });
-    },
-  },
   computed: {
     ...mapGetters({
       playerIsPlaying: "explore/playerIsPlaying",
       playerSource: "explore/playerSource",
       isMobile: "client/isMobile",
-      access_token: "client/access_token",
     }),
-    search: {
-      get: function () {
-        return this.$store.getters["explore/search"];
-      },
-      set: function (val) {
-        this.$store.commit("explore/search", val);
-      },
-    },
-    artists: {
-      get: function () {
-        return this.$store.getters["explore/artists"];
-      },
-      set: function (val) {
-        this.$store.commit("explore/artists", val);
-      },
-    },
     searchedArtists: {
       get: function () {
         return this.$store.getters["explore/searchedArtists"];
@@ -494,6 +92,14 @@ export default {
         this.$store.commit("explore/relatedArtists", val);
       },
     },
+    modalVisible: {
+      get: function () {
+        return this.$store.getters["explore/modalVisible"];
+      },
+      set: function (val) {
+        this.$store.commit("explore/modalVisible", val);
+      },
+    },
   },
   watch: {
     playerIsPlaying() {
@@ -513,6 +119,55 @@ export default {
     async searchedArtists() {
       await this.fetchRelatedArtists();
     },
+  },
+  methods: {
+    async fetchRelatedArtists() {
+      if (this.searchedArtists.length > 0) {
+        let artistId = this.searchedArtists[0].id;
+        try {
+          let { artistsRelatedByArtistId } = await client.query({
+            artistsRelatedByArtistId: [
+              { artistId },
+              {
+                id: true,
+                name: true,
+                genres: true,
+                popularity: true,
+                images: { url: true },
+                followers: { total: true },
+                external_urls: { spotify: true },
+              },
+            ],
+          });
+          this.relatedArtists = artistsRelatedByArtistId;
+        } catch (e) {
+          this.$notification.open({
+            message: "Error on fetching related artists",
+            description: `Some error has occured, please try again or refresh the page...`,
+            icon: <a-icon type="monitor" style="color: red" />,
+          });
+        }
+      }
+    },
+  },
+  middleware: "authentication",
+  async mounted() {
+    this.$refs.plyr.player.autoplay = true;
+    this.$refs.plyr.player.loop = true;
+    try {
+      let res = await client.query({
+        spotifyUser: {
+          id: true,
+        },
+      });
+      this.$ga.set({ userId: res.spotifyUser.id });
+    } catch (e) {
+      this.$notification.open({
+        message: "Error",
+        description: `Some error has occured, please try again or refresh the page...`,
+        icon: <a-icon type="monitor" style="color: red" />,
+      });
+    }
   },
 };
 </script>
