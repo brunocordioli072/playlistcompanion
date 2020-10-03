@@ -41,9 +41,8 @@
 </template>
 
 <script>
-import { createGraphQLClient } from "../../clients";
+import { graphqlClient } from "../../clients";
 import { mapGetters } from "vuex";
-const client = createGraphQLClient();
 
 export default {
   data() {
@@ -118,15 +117,15 @@ export default {
               external_urls: { spotify: true },
             };
             if (!params.artist && !params.track) {
-              res = await client.query({
+              res = await graphqlClient().query({
                 artists: [{ query: value }, artistSubFields],
               });
             } else if (params.artist) {
-              res = await client.query({
+              res = await graphqlClient().query({
                 artists: [{ name: params.artist }, artistSubFields],
               });
             } else if (params.track) {
-              res = await client.query({
+              res = await graphqlClient().query({
                 artists: [{ track: params.track }, artistSubFields],
               });
             }

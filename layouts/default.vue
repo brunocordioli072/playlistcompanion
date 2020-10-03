@@ -13,26 +13,21 @@ import moment from "moment";
 import { mapGetters } from "vuex";
 
 export default {
-  async mounted() {
-    this.$store.commit("client/isMobile", window.innerWidth < 550);
-    this.setAuth();
-    this.$axios.setToken(this.$store.getters["client/access_token"]);
-    this.$axios.onError(async (error) => {
-      if (error.response.status === 401) {
-        await this.refreshToken();
-        this.$notification.open({
-          message: "Error",
-          description: `Some error has occured, please try again...`,
-          icon: <a-icon type="monitor" style="color: red" />,
-        });
+  computed: {
+    ...mapGetters({
+      access_token: "client/access_token",
+      refresh_token: "client/refresh_token",
+    }),
+  },
+  watch: {
+    "$router.query": function () {
+      this.setAuth();
+    },
+    isAuthenticated: async function () {
+      if (!this.isAuthenticated) {
+        this.$router.go("/");
       }
-    });
-    if (this.expired_token) {
-      await this.refreshToken();
-    }
-    if (this.$route.query) {
-      this.$router.push("/");
-    }
+    },
   },
   methods: {
     setAuth() {
@@ -54,28 +49,41 @@ export default {
           eventAction: "Click",
           eventLabel: "Logged in",
         });
-        if (this.isAuthenticated) {
+        if (this.$store.getters["isAuthenticated"]) {
           this.$router.push("/explore");
         }
       }
     },
-  },
-  computed: {
-    ...mapGetters({
-      access_token: "client/access_token",
-      refresh_token: "client/refresh_token",
-      isAuthenticated: "client/isAuthenticated",
-    }),
-  },
-  watch: {
-    "$router.query": function () {
-      this.setAuth();
+    async refreshToken() {
+      let res = await this.$axios.$get(
+        `/auth/spotify/refresh_token?
+        refresh_token=${this.$store.getters["client/refresh_token"]}`
+      );
+      this.$store.commit("client/setAccess_token", res.access_token);
+      this.$store.commit("client/setExpires_in", 3600 * 1000 + +moment());
+      this.$axios.setToken(this.$store.getters["client/access_token"]);
     },
-    isAuthenticated: async function () {
-      if (!this.isAuthenticated) {
-        this.$router.go("/");
+  },
+  async mounted() {
+    this.$store.commit("client/isMobile", window.innerWidth < 550);
+    this.setAuth();
+    this.$axios.setToken(this.$store.getters["client/access_token"]);
+    this.$axios.onError(async (error) => {
+      if (error.response.status === 401) {
+        await this.refreshToken();
+        this.$notification.open({
+          message: "Error on auth",
+          description: `Some error has occured, please try again...`,
+          icon: <a-icon type="monitor" style="color: red" />,
+        });
       }
-    },
+    });
+    if (this.expired_token) {
+      await this.refreshToken();
+    }
+    if (this.$route.query) {
+      this.$router.push("/");
+    }
   },
 };
 </script>

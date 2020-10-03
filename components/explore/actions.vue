@@ -40,8 +40,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { createGraphQLClient } from "../../clients";
-const client = createGraphQLClient();
+import { graphqlClient } from "../../clients";
 
 export default {
   props: {
@@ -58,24 +57,24 @@ export default {
     async playTopTrackByArtist(item) {
       this.playerIsPlaying = false;
       try {
-        let res = await client.query({
+        let res = await graphqlClient().query({
           artistTopTracks: [
             { artistId: item.id },
             { preview_url: true, artists: { name: true } },
           ],
         });
+        let tracks = res.artistTopTracks;
+        this.sourceArtists = tracks[0].artists.map((a) => a.name);
+        this.source = tracks[0].preview_url;
+        this.$store.commit("explore/playerSource", tracks[0].preview_url);
+        this.playerIsPlaying = true;
       } catch (e) {
         this.$notification.open({
-          message: "Error",
+          message: "Error fetching artists tracks",
           description: `Some error has occured, please try again or refresh the page...`,
           icon: <a-icon type="monitor" style="color: red" />,
         });
       }
-      let tracks = res.artistTopTracks;
-      this.sourceArtists = tracks[0].artists.map((a) => a.name);
-      this.source = tracks[0].preview_url;
-      this.$store.commit("explore/playerSource", tracks[0].preview_url);
-      this.playerIsPlaying = true;
     },
     removeSelectedArtists(item) {
       this.selectedArtists = this.selectedArtists.filter((a) => a != item);

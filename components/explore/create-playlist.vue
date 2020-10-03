@@ -17,8 +17,7 @@
 </template>
 
 <script>
-import { createGraphQLClient } from "../../clients";
-const client = createGraphQLClient();
+import { graphqlClient } from "../../clients";
 
 export default {
   data() {
@@ -66,12 +65,12 @@ export default {
     async createPlaylist() {
       this.creatingPlaylist = true;
       try {
-        let res = await client.mutation({
+        let res = await graphqlClient().mutation({
           insertPlaylist: [{ playlistName: this.playlistName }, { id: true }],
         });
         let playlist = res.insertPlaylist;
         try {
-          await client.mutation({
+          await graphqlClient().mutation({
             insertArtistsToPlaylist: [
               {
                 artistIds: this.selectedArtists.map((a) => a.id),

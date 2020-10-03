@@ -58,8 +58,7 @@
 <script>
 import { everything } from "genql-runtime";
 import { mapGetters } from "vuex";
-import { createGraphQLClient } from "../clients";
-const client = createGraphQLClient();
+import { graphqlClient } from "../clients";
 
 export default {
   computed: {
@@ -125,7 +124,7 @@ export default {
       if (this.searchedArtists.length > 0) {
         let artistId = this.searchedArtists[0].id;
         try {
-          let { artistsRelatedByArtistId } = await client.query({
+          let { artistsRelatedByArtistId } = await graphqlClient().query({
             artistsRelatedByArtistId: [
               { artistId },
               {
@@ -153,20 +152,23 @@ export default {
   async mounted() {
     this.$refs.plyr.player.autoplay = true;
     this.$refs.plyr.player.loop = true;
-    try {
-      let res = await client.query({
-        spotifyUser: {
-          id: true,
-        },
-      });
-      this.$ga.set({ userId: res.spotifyUser.id });
-    } catch (e) {
-      this.$notification.open({
-        message: "Error",
-        description: `Some error has occured, please try again or refresh the page...`,
-        icon: <a-icon type="monitor" style="color: red" />,
-      });
-    }
+    let getSpotifyUser = async () => {
+      try {
+        let res = await graphqlClient().query({
+          spotifyUser: {
+            id: true,
+          },
+        });
+        this.$ga.set({ userId: res.spotifyUser.id });
+      } catch (e) {
+        this.$notification.open({
+          message: "Error on getting user profile",
+          description: `Some error has occured, please try again or refresh the page...`,
+          icon: <a-icon type="monitor" style="color: red" />,
+        });
+      }
+    };
+    setTimeout(getSpotifyUser, 2000);
   },
 };
 </script>

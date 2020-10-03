@@ -22,7 +22,7 @@
           size="large"
           type="primary"
           id="login"
-          @click="$router.go('/explore')"
+          @click="$router.push('/explore')"
           >Go explore!</a-button
         >
         <a-button v-else size="large" type="primary" id="login" @click="login"
