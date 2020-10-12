@@ -1,6 +1,6 @@
 <template>
   <div>
-    <c-header></c-header>
+    <c-header style="margin-bottom: 50px"></c-header>
     <div style="min-height: 84.8vh" class="content">
       <Nuxt />
     </div>
@@ -79,9 +79,9 @@ export default {
       }
     });
     if (this.expired_token) {
-      await this.refreshToken();
+      this.$router.push("/");
     }
-    if (this.$route.query) {
+    if (this.$route.query.access_token) {
       this.$router.push("/");
     }
   },
@@ -89,12 +89,6 @@ export default {
 </script>
 
 <style>
-.content {
-  margin-top: 12vh;
-  display: flex;
-  justify-content: center;
-  text-align: center;
-}
 
 html {
   font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI",

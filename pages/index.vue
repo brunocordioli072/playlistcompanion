@@ -17,17 +17,19 @@
           <b>Its pretty awesome!</b> You just have to click on the login button
           right above login with your spotify account and give it a try!
         </p>
-        <a-button
-          v-if="isAuthenticated"
-          size="large"
-          type="primary"
-          id="login"
-          @click="$router.push('/explore')"
-          >Go explore!</a-button
-        >
-        <a-button v-else size="large" type="primary" id="login" @click="login"
-          >login</a-button
-        >
+        <a-space direction="vertical">
+          <a-button
+            v-if="isAuthenticated"
+            size="large"
+            type="primary"
+            id="login"
+            @click="$router.push('/explore')"
+            >Go explore!</a-button
+          >
+          <a-button v-else size="large" type="primary" id="login" @click="login"
+            >login</a-button
+          >
+        </a-space>
       </div>
     </a-space>
   </div>
@@ -58,7 +60,7 @@ export default {
 <style>
 .container {
   margin: 0 auto;
-  height: 300px;
+  margin-top: 20px;
   min-height: 30vh;
   display: flex;
   justify-content: center;

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="display: flex; justify-content: center; text-align: center">
     <a-space direction="vertical">
       <c-search-artist></c-search-artist>
 
