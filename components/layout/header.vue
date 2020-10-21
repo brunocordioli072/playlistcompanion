@@ -33,26 +33,3 @@ export default {
   },
 };
 </script>
-
-<style>
-@import url("https://fonts.googleapis.com/css2?family=Kanit:wght@100;200;600&display=swap");
-
-.logo {
-  width: 180px;
-  height: 45px;
-  color: white;
-  margin: 0px 24px 16px 0;
-  float: left;
-}
-#playlist {
-  font-size: 20px;
-  font-weight: 200;
-  font-family: "Kanit", sans-serif;
-}
-#companion {
-  font-size: 20px;
-  margin: 0 0 0 0px;
-  font-weight: 600;
-  font-family: "Kanit", sans-serif;
-}
-</style>

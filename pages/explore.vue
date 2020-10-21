@@ -7,7 +7,7 @@
         <c-searched-artists></c-searched-artists>
       </div>
 
-      <div :style="!isMobile ? 'width: 81vw' : 'width: 95vw'">
+      <div>
         <a-space
           v-if="relatedArtists.length > 0"
           direction="vertical"

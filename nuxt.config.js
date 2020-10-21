@@ -15,14 +15,6 @@ export default {
    ** Headers of the page
    ** See https://nuxtjs.org/api/configuration-head
    */
-  env: {
-    WORKER_URL_DEV: "http://localhost:8080/prod",
-    WORKER_URL_PROD:
-      "https://z90gjsb7ua.execute-api.us-east-1.amazonaws.com/prod",
-    BRIDGE_URL_DEV: "http://localhost:4000/prod/graphql",
-    BRIDGE_URL_PROD:
-      "https://ojmfr9w3ea.execute-api.us-east-1.amazonaws.com/prod/graphql"
-  },
   head: {
     htmlAttrs: {
       lang: "en"

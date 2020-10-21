@@ -1,22 +1,63 @@
 <template>
-  <div>
-    <c-header style="margin-bottom: 50px"></c-header>
-    <div style="min-height: 84.8vh" class="content">
-      <Nuxt />
-    </div>
-    <c-footer></c-footer>
-  </div>
+  <a-layout id="components-layout-demo-side" style="min-height: 100vh">
+    <a-layout-sider
+      collapsed-width="0"
+      :trigger="null"
+      v-model="collapsedFormatted"
+      :width="200"
+      collapsible
+    >
+      <c-logo style="margin: 10px 0 10px 0" :collapsed="collapsed"></c-logo>
+      <a-menu theme="dark" mode="inline">
+        <a-menu-item @click="$router.push('/explore')" key="1">
+          <a-icon type="compass" />
+          <span>Spotify</span>
+        </a-menu-item>
+        <a-menu-item @click="$router.push('/explore/youtube')" key="1">
+          <a-icon type="compass" />
+          <span>Youtube</span>
+        </a-menu-item>
+      </a-menu>
+    </a-layout-sider>
+    <a-layout>
+      <a-layout-header style="background: #fff; padding: 0">
+        <a-button
+          v-if="isMobile"
+          type="link"
+          icon="menu-unfold"
+          size="large"
+          @click="collapsed = !collapsed"
+        />
+      </a-layout-header>
+      <a-layout-content :style="isMobile ?  'margin: 16px 4px' : 'margin: 16px 16px'">
+        <div
+          :style="{ padding: '20px', background: '#fff', minHeight: '360px' }"
+        >
+          <Nuxt />
+        </div>
+      </a-layout-content>
+      <c-footer></c-footer>
+    </a-layout>
+  </a-layout>
 </template>
-
 <script>
 import moment from "moment";
 import { mapGetters } from "vuex";
 
 export default {
+  data() {
+    return {
+      collapsed: true,
+    };
+  },
   computed: {
+    collapsedFormatted() {
+      return this.isMobile ? this.collapsed : !this.collapsed;
+    },
     ...mapGetters({
       access_token: "client/access_token",
       refresh_token: "client/refresh_token",
+      isMobile: "client/isMobile",
     }),
   },
   watch: {
@@ -65,7 +106,7 @@ export default {
     },
   },
   async mounted() {
-    this.$store.commit("client/isMobile", window.innerWidth < 550);
+    this.$store.commit("client/isMobile", window.innerWidth < 1100);
     this.setAuth();
     this.$axios.setToken(this.$store.getters["client/access_token"]);
     this.$axios.onError(async (error) => {
@@ -89,7 +130,6 @@ export default {
 </script>
 
 <style>
-
 html {
   font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, "Helvetica Neue", Arial, sans-serif;

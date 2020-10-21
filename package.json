@@ -6,9 +6,9 @@
   "private": true,
   "scripts": {
     "build": "genql --endpoint https://ojmfr9w3ea.execute-api.us-east-1.amazonaws.com/prod/graphql --output ./clients/graphql & nuxt build",
-    "build:client:dev": "genql --endpoint http://localhost:4000/prod/graphql --output ./clients/graphql",
+    "build:client:local": "genql --endpoint http://localhost:4000/local/graphql --output ./clients/graphql",
     "build:client:prod": "genql --endpoint https://ojmfr9w3ea.execute-api.us-east-1.amazonaws.com/prod/graphql --output ./clients/graphql",
-    "start:dev": "nuxt",
+    "start:local": "nuxt",
     "start:prod": "nuxt start",
     "generate": "nuxt generate",
     "test": "jest",

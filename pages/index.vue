@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <a-space direction="vertical">
-      <div style="max-width: 800px; width: 80vw; font-size: 16px">
+      <div style="max-width: 800px; width: 80vw; font-size: 16px; margin: 0 420px">
         <h2>Do your own playlist!</h2>
         <p>
           For people who have
