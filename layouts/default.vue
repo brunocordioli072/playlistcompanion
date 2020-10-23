@@ -106,6 +106,7 @@ export default {
     },
   },
   async mounted() {
+    console.log(process.env.NODE_ENV)
     this.$store.commit("client/isMobile", window.innerWidth < 1100);
     this.setAuth();
     this.$axios.setToken(this.$store.getters["client/access_token"]);
