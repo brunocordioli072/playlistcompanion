@@ -57,6 +57,10 @@ export default {
       sendHitTask: true
     }
   },
+  env: {
+    WORKER_URL: process.env.WORKER_URL,
+    BRIDGE_URL: process.env.BRIDGE_URL,
+  },
   /*
    ** Nuxt.js modules
    */
