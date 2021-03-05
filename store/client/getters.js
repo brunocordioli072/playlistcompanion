@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment from 'moment';
 
 export default {
   access_token(state) {
@@ -14,6 +14,6 @@ export default {
     return state.expires_in && state.expires_in >= +moment();
   },
   isMobile(state) {
-    return state.isMobile
-  }
+    return state.isMobile;
+  },
 };

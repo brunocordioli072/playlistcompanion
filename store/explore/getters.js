@@ -9,9 +9,9 @@ export default {
     return state.searchedArtists;
   },
   selectedArtistsNames(state) {
-    if (state.selectedArtists.length > 0)
-      return state.selectedArtists.map(a => a.name);
-    else return [];
+    if (state.selectedArtists.length > 0) {
+      return state.selectedArtists.map((a) => a.name);
+    } else return [];
   },
   selectedArtists(state) {
     return state.selectedArtists;
@@ -33,5 +33,5 @@ export default {
   },
   creatingPlaylist(state) {
     return state.creatingPlaylist;
-  }
+  },
 };

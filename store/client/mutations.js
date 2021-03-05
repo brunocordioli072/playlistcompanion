@@ -1,12 +1,12 @@
 export default {
-  setAccess_token(state, access_token) {
-    state.access_token = access_token;
+  setAccess_token(state, accessToken) {
+    state.access_token = accessToken;
   },
-  setRefresh_token(state, refresh_token) {
-    state.refresh_token = refresh_token;
+  setRefresh_token(state, refreshToken) {
+    state.refresh_token = refreshToken;
   },
-  setExpires_in(state, expires_in) {
-    state.expires_in = expires_in;
+  setExpires_in(state, expiresIn) {
+    state.expires_in = expiresIn;
   },
   isMobile(state, isMobile) {
     state.isMobile = isMobile;
