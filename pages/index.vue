@@ -36,22 +36,22 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import {mapGetters} from 'vuex';
 
 export default {
   methods: {
     login() {
       this.$ga.event({
-        eventCategory: "Button",
-        eventAction: "Click",
-        eventLabel: "Tried to Login",
+        eventCategory: 'Button',
+        eventAction: 'Click',
+        eventLabel: 'Tried to Login',
       });
       window.location.replace(`${process.env.WORKER_URL}/auth/spotify/login`);
     },
   },
   computed: {
     ...mapGetters({
-      isAuthenticated: "client/isAuthenticated",
+      isAuthenticated: 'client/isAuthenticated',
     }),
   },
 };

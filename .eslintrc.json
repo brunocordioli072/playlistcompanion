@@ -8,12 +8,17 @@
         "google"
     ],
     "parserOptions": {
-        "ecmaVersion": 12,
+        "ecmaFeatures": {
+            "jsx": true,
+            "modules": true
+        },
         "sourceType": "module"
     },
     "plugins": [
         "vue"
     ],
     "rules": {
+        "camelcase": "off",
+        "max-len": "off"
     }
 }

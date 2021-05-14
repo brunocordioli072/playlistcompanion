@@ -39,8 +39,8 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import { graphqlClient } from "../../clients";
+import {spotify} from '../../clients/spotify';
+import {mapGetters} from 'vuex';
 
 export default {
   props: {
@@ -49,7 +49,7 @@ export default {
   },
   data() {
     return {
-      source: "",
+      source: '',
       sourceArtists: [],
     };
   },
@@ -57,20 +57,15 @@ export default {
     async playTopTrackByArtist(item) {
       this.playerIsPlaying = false;
       try {
-        let res = await graphqlClient().query({
-          artistTopTracks: [
-            { artistId: item.id },
-            { preview_url: true, artists: { name: true } },
-          ],
-        });
-        let tracks = res.artistTopTracks;
+        const res = await spotify.getArtistTopTracks(item.id, 'GB');
+        const tracks = res.body.tracks;
         this.sourceArtists = tracks[0].artists.map((a) => a.name);
         this.source = tracks[0].preview_url;
-        this.$store.commit("explore/playerSource", tracks[0].preview_url);
+        this.$store.commit('explore/playerSource', tracks[0].preview_url);
         this.playerIsPlaying = true;
       } catch (e) {
         this.$notification.open({
-          message: "Error fetching artists tracks",
+          message: 'Error fetching artists tracks',
           description: `Some error has occured, please try again or refresh the page...`,
           icon: <a-icon type="monitor" style="color: red" />,
         });
@@ -81,21 +76,21 @@ export default {
     },
     stopPlayer() {
       this.sourceArtists = [];
-      this.$store.commit("explore/playerIsPlaying", false);
+      this.$store.commit('explore/playerIsPlaying', false);
     },
     updateSearchedArtist(item) {
       this.searchedArtists = [item];
     },
     addSelectedArtists(item) {
-      this.$store.commit("explore/addSelectedArtist", item);
+      this.$store.commit('explore/addSelectedArtist', item);
     },
   },
   computed: {
     ...mapGetters({
-      selectedArtistsNames: "explore/selectedArtistsNames",
-      playerIsPlaying: "explore/playerIsPlaying",
-      playerIsLoading: "explore/playerIsLoading",
-      playerSource: "explore/playerSource",
+      selectedArtistsNames: 'explore/selectedArtistsNames',
+      playerIsPlaying: 'explore/playerIsPlaying',
+      playerIsLoading: 'explore/playerIsLoading',
+      playerSource: 'explore/playerSource',
     }),
     canBePlayed() {
       return (
@@ -108,27 +103,27 @@ export default {
       return this.selectedArtistsNames.includes(this.item.name);
     },
     searchedArtists: {
-      get: function () {
-        return this.$store.getters["explore/searchedArtists"];
+      get: function() {
+        return this.$store.getters['explore/searchedArtists'];
       },
-      set: function (val) {
-        this.$store.commit("explore/searchedArtists", val);
+      set: function(val) {
+        this.$store.commit('explore/searchedArtists', val);
       },
     },
     selectedArtists: {
-      get: function () {
-        return this.$store.getters["explore/selectedArtists"];
+      get: function() {
+        return this.$store.getters['explore/selectedArtists'];
       },
-      set: function (val) {
-        this.$store.commit("explore/selectedArtists", val);
+      set: function(val) {
+        this.$store.commit('explore/selectedArtists', val);
       },
     },
     playerIsPlaying: {
-      get: function () {
-        return this.$store.getters["explore/playerIsPlaying"];
+      get: function() {
+        return this.$store.getters['explore/playerIsPlaying'];
       },
-      set: function (val) {
-        this.$store.commit("explore/playerIsPlaying", val);
+      set: function(val) {
+        this.$store.commit('explore/playerIsPlaying', val);
       },
     },
   },

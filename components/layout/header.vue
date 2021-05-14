@@ -22,13 +22,13 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import {mapGetters} from 'vuex';
 
 export default {
   computed: {
     ...mapGetters({
-      access_token: "client/access_token",
-      isMobile: "client/isMobile",
+      access_token: 'client/access_token',
+      isMobile: 'client/isMobile',
     }),
   },
 };

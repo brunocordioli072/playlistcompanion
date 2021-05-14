@@ -41,8 +41,8 @@
 </template>
 
 <script>
-import { graphqlClient } from "../../clients";
-import { mapGetters } from "vuex";
+import {mapGetters} from 'vuex';
+import {spotify} from '../../clients/spotify';
 
 export default {
   data() {
@@ -53,30 +53,30 @@ export default {
   },
   computed: {
     ...mapGetters({
-      isMobile: "client/isMobile",
+      isMobile: 'client/isMobile',
     }),
     search: {
-      get: function () {
-        return this.$store.getters["explore/search"];
+      get: function() {
+        return this.$store.getters['explore/search'];
       },
-      set: function (val) {
-        this.$store.commit("explore/search", val);
+      set: function(val) {
+        this.$store.commit('explore/search', val);
       },
     },
     artists: {
-      get: function () {
-        return this.$store.getters["explore/artists"];
+      get: function() {
+        return this.$store.getters['explore/artists'];
       },
-      set: function (val) {
-        this.$store.commit("explore/artists", val);
+      set: function(val) {
+        this.$store.commit('explore/artists', val);
       },
     },
     searchedArtists: {
-      get: function () {
-        return this.$store.getters["explore/searchedArtists"];
+      get: function() {
+        return this.$store.getters['explore/searchedArtists'];
       },
-      set: function (val) {
-        this.$store.commit("explore/searchedArtists", val);
+      set: function(val) {
+        this.$store.commit('explore/searchedArtists', val);
       },
     },
   },
@@ -87,7 +87,7 @@ export default {
       });
     },
     getImageFromArtist(item) {
-      return item.images && item.images.length > 0 ? item.images[0].url : "";
+      return item.images && item.images.length > 0 ? item.images[0].url : '';
     },
     updateSearchedArtist(item) {
       this.searchedArtists = [item];
@@ -96,43 +96,28 @@ export default {
       if (value) {
         const enrichQuery = (query) => {
           return (
-            query.match(new RegExp("([^?=&]+)(=([^&]*))?", "g")) || []
-          ).reduce(function (result, each, n, every) {
-            let [key, value] = each.split(":");
+            query.match(new RegExp('([^?=&]+)(=([^&]*))?', 'g')) || []
+          ).reduce(function(result, each, n, every) {
+            const [key, value] = each.split(':');
             result[key] = value;
             return result;
           }, {});
         };
         const search = async () => {
           try {
-            let params = enrichQuery(value);
+            const params = enrichQuery(value);
             let res;
-            let artistSubFields = {
-              id: true,
-              name: true,
-              genres: true,
-              popularity: true,
-              images: { url: true },
-              followers: { total: true },
-              external_urls: { spotify: true },
-            };
             if (!params.artist && !params.track) {
-              res = await graphqlClient().query({
-                artists: [{ query: value }, artistSubFields],
-              });
+              res = await spotify.search(value, ['artist', 'track'], {limit: 10});
             } else if (params.artist) {
-              res = await graphqlClient().query({
-                artists: [{ name: params.artist }, artistSubFields],
-              });
+              res = await spotify.search(params.artist, ['artist'], {limit: 10});
             } else if (params.track) {
-              res = await graphqlClient().query({
-                artists: [{ track: params.track }, artistSubFields],
-              });
+              res = await spotify.search(params.track, ['track'], {limit: 10});
             }
-            this.artists = res.artists;
+            this.artists = res.body.artists.items;
           } catch (e) {
             this.$notification.open({
-              message: "Error on fetching artists",
+              message: 'Error on fetching artists',
               description: `Some error has occured, please try again or refresh the page...`,
               icon: <a-icon type="monitor" style="color: red" />,
             });
@@ -149,5 +134,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

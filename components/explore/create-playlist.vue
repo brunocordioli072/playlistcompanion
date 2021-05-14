@@ -17,8 +17,7 @@
 </template>
 
 <script>
-import { graphqlClient } from "../../clients";
-
+import {spotify} from '../../clients/spotify';
 export default {
   data() {
     return {
@@ -27,78 +26,82 @@ export default {
   },
   computed: {
     selectedArtists: {
-      get: function () {
-        return this.$store.getters["explore/selectedArtists"];
+      get: function() {
+        return this.$store.getters['explore/selectedArtists'];
       },
-      set: function (val) {
-        this.$store.commit("explore/selectedArtists", val);
+      set: function(val) {
+        this.$store.commit('explore/selectedArtists', val);
       },
     },
     creatingPlaylist: {
-      get: function () {
-        return this.$store.getters["explore/creatingPlaylist"];
+      get: function() {
+        return this.$store.getters['explore/creatingPlaylist'];
       },
-      set: function (val) {
-        this.$store.commit("explore/creatingPlaylist", val);
+      set: function(val) {
+        this.$store.commit('explore/creatingPlaylist', val);
       },
     },
     modalVisible: {
-      get: function () {
-        return this.$store.getters["explore/modalVisible"];
+      get: function() {
+        return this.$store.getters['explore/modalVisible'];
       },
-      set: function (val) {
-        this.$store.commit("explore/modalVisible", val);
+      set: function(val) {
+        this.$store.commit('explore/modalVisible', val);
       },
     },
   },
   methods: {
     clearView() {
-      this.$store.commit("explore/creatingPlaylist", false);
-      this.$store.commit("explore/modalVisible", false);
-      this.$store.commit("explore/playlistName", null);
-      this.$store.commit("explore/search", []);
-      this.$store.commit("explore/artists", []);
-      this.$store.commit("explore/searchedArtists", []);
-      this.$store.commit("explore/selectedArtists", []);
-      this.$store.commit("explore/relatedArtists", []);
+      this.$store.commit('explore/creatingPlaylist', false);
+      this.$store.commit('explore/modalVisible', false);
+      this.$store.commit('explore/playlistName', null);
+      this.$store.commit('explore/search', []);
+      this.$store.commit('explore/artists', []);
+      this.$store.commit('explore/searchedArtists', []);
+      this.$store.commit('explore/selectedArtists', []);
+      this.$store.commit('explore/relatedArtists', []);
     },
     async createPlaylist() {
       this.creatingPlaylist = true;
       try {
-        let res = await graphqlClient().mutation({
-          insertPlaylist: [{ playlistName: this.playlistName }, { id: true }],
+        const res = await spotify.createPlaylist(this.playlistName, {
+          public: false,
         });
-        let playlist = res.insertPlaylist;
+        const playlist = res.body;
         try {
-          await graphqlClient().mutation({
-            insertArtistsToPlaylist: [
-              {
-                artistIds: this.selectedArtists.map((a) => a.id),
-                playlistId: playlist.id,
-              },
-            ],
-          });
+          const tracks = [];
+          const artistIds = this.selectedArtists.map((a) => a.id);
+          for (let index = 0; index < artistIds.length; index++) {
+            const artistId = artistIds[index];
+            const trackSearch = await spotify.getArtistTopTracks(
+                artistId,
+                'GB',
+            );
+            tracks.push(...trackSearch.body.tracks);
+          }
+          const tracksURIs = tracks.map((t) => t.uri);
+          await spotify.addTracksToPlaylist(playlist.id, tracksURIs);
         } catch (e) {
           this.$notification.open({
-            message: "Error on saving musics",
+            message: 'Error on saving musics',
             description: `Some error has occured, please try again...`,
             icon: <a-icon type="monitor" style="color: red" />,
           });
         }
         this.$notification.open({
-          message: "Playlist created!!!",
+          message: 'Playlist created!!!',
           description: `Playlist added to your spotify with the name ${this.playlistName}`,
           icon: <a-icon type="smile" style="color: #108ee9" />,
         });
         this.$ga.event({
-          eventCategory: "Button",
-          eventAction: "Click",
-          eventLabel: "Playlist Created",
+          eventCategory: 'Button',
+          eventAction: 'Click',
+          eventLabel: 'Playlist Created',
         });
         this.clearView();
       } catch (e) {
         this.$notification.open({
-          message: "Error on creating playlist",
+          message: 'Error on creating playlist',
           description: `Some error has occured, please try again...`,
           icon: <a-icon type="monitor" style="color: red" />,
         });
@@ -108,5 +111,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

@@ -33,88 +33,88 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import {mapGetters} from 'vuex';
 
 export default {
   data() {
     return {
       relatedArtistsColumns: [
         {
-          dataIndex: "images",
-          key: "images",
-          title: "",
-          align: "center",
-          scopedSlots: { customRender: "images" },
+          dataIndex: 'images',
+          key: 'images',
+          title: '',
+          align: 'center',
+          scopedSlots: {customRender: 'images'},
         },
         {
-          title: "Name",
-          dataIndex: "name",
-          align: "center",
-          key: "name",
-          scopedSlots: { customRender: "name" },
+          title: 'Name',
+          dataIndex: 'name',
+          align: 'center',
+          key: 'name',
+          scopedSlots: {customRender: 'name'},
         },
         {
-          title: "Genres",
-          key: "genres",
-          align: "center",
-          dataIndex: "genres",
-          scopedSlots: { customRender: "genres" },
+          title: 'Genres',
+          key: 'genres',
+          align: 'center',
+          dataIndex: 'genres',
+          scopedSlots: {customRender: 'genres'},
         },
         {
-          title: "Action",
-          key: "action",
-          align: "center",
-          scopedSlots: { customRender: "action" },
+          title: 'Action',
+          key: 'action',
+          align: 'center',
+          scopedSlots: {customRender: 'action'},
         },
       ],
       relatedArtistsColumnsMobile: [
         {
-          dataIndex: "images",
-          key: "images",
-          title: "",
-          align: "center",
-          scopedSlots: { customRender: "images" },
+          dataIndex: 'images',
+          key: 'images',
+          title: '',
+          align: 'center',
+          scopedSlots: {customRender: 'images'},
         },
         {
-          title: "Name",
-          dataIndex: "name",
-          align: "center",
-          key: "name",
-          scopedSlots: { customRender: "name" },
+          title: 'Name',
+          dataIndex: 'name',
+          align: 'center',
+          key: 'name',
+          scopedSlots: {customRender: 'name'},
         },
         {
-          title: "Action",
-          key: "action",
-          align: "center",
-          scopedSlots: { customRender: "action" },
+          title: 'Action',
+          key: 'action',
+          align: 'center',
+          scopedSlots: {customRender: 'action'},
         },
       ],
     };
   },
   computed: {
     ...mapGetters({
-      isMobile: "client/isMobile",
+      isMobile: 'client/isMobile',
     }),
     relatedArtists: {
-      get: function () {
-        return this.$store.getters["explore/relatedArtists"];
+      get: function() {
+        return this.$store.getters['explore/relatedArtists'];
       },
-      set: function (val) {
-        this.$store.commit("explore/relatedArtists", val);
+      set: function(val) {
+        this.$store.commit('explore/relatedArtists', val);
       },
     },
     modalVisible: {
-      get: function () {
-        return this.$store.getters["explore/modalVisible"];
+      get: function() {
+        return this.$store.getters['explore/modalVisible'];
       },
-      set: function (val) {
-        this.$store.commit("explore/modalVisible", val);
+      set: function(val) {
+        this.$store.commit('explore/modalVisible', val);
       },
     },
   },
   methods: {
     getImageFromArtist(item) {
-      return item.images && item.images.length > 0 ? item.images[0].url : "";
+      return item.images && item.images.length > 0 ? item.images[0].url : '';
     },
   },
 };

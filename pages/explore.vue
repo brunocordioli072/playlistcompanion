@@ -56,47 +56,46 @@
 </template>
 
 <script>
-import { everything } from "genql-runtime";
-import { mapGetters } from "vuex";
-import { graphqlClient } from "../clients";
+import {spotify} from '../clients/spotify';
+import {mapGetters} from 'vuex';
 
 export default {
   computed: {
     ...mapGetters({
-      playerIsPlaying: "explore/playerIsPlaying",
-      playerSource: "explore/playerSource",
-      isMobile: "client/isMobile",
+      playerIsPlaying: 'explore/playerIsPlaying',
+      playerSource: 'explore/playerSource',
+      isMobile: 'client/isMobile',
     }),
     searchedArtists: {
-      get: function () {
-        return this.$store.getters["explore/searchedArtists"];
+      get: function() {
+        return this.$store.getters['explore/searchedArtists'];
       },
-      set: function (val) {
-        this.$store.commit("explore/searchedArtists", val);
+      set: function(val) {
+        this.$store.commit('explore/searchedArtists', val);
       },
     },
     selectedArtists: {
-      get: function () {
-        return this.$store.getters["explore/selectedArtists"];
+      get: function() {
+        return this.$store.getters['explore/selectedArtists'];
       },
-      set: function (val) {
-        this.$store.commit("explore/selectedArtists", val);
+      set: function(val) {
+        this.$store.commit('explore/selectedArtists', val);
       },
     },
     relatedArtists: {
-      get: function () {
-        return this.$store.getters["explore/relatedArtists"];
+      get: function() {
+        return this.$store.getters['explore/relatedArtists'];
       },
-      set: function (val) {
-        this.$store.commit("explore/relatedArtists", val);
+      set: function(val) {
+        this.$store.commit('explore/relatedArtists', val);
       },
     },
     modalVisible: {
-      get: function () {
-        return this.$store.getters["explore/modalVisible"];
+      get: function() {
+        return this.$store.getters['explore/modalVisible'];
       },
-      set: function (val) {
-        this.$store.commit("explore/modalVisible", val);
+      set: function(val) {
+        this.$store.commit('explore/modalVisible', val);
       },
     },
   },
@@ -111,8 +110,8 @@ export default {
     },
     playerSource() {
       this.$refs.plyr.player.source = {
-        type: "audio",
-        sources: [{ src: this.playerSource, type: "audio/mp3" }],
+        type: 'audio',
+        sources: [{src: this.playerSource, type: 'audio/mp3'}],
       };
     },
     async searchedArtists() {
@@ -122,26 +121,13 @@ export default {
   methods: {
     async fetchRelatedArtists() {
       if (this.searchedArtists.length > 0) {
-        let artistId = this.searchedArtists[0].id;
+        const artistId = this.searchedArtists[0].id;
         try {
-          let { artistsRelatedByArtistId } = await graphqlClient().query({
-            artistsRelatedByArtistId: [
-              { artistId },
-              {
-                id: true,
-                name: true,
-                genres: true,
-                popularity: true,
-                images: { url: true },
-                followers: { total: true },
-                external_urls: { spotify: true },
-              },
-            ],
-          });
-          this.relatedArtists = artistsRelatedByArtistId;
+          const res = await spotify.getArtistRelatedArtists(artistId);
+          this.relatedArtists = res.body.artists;
         } catch (e) {
           this.$notification.open({
-            message: "Error on fetching related artists",
+            message: 'Error on fetching related artists',
             description: `Some error has occured, please try again or refresh the page...`,
             icon: <a-icon type="monitor" style="color: red" />,
           });
@@ -152,17 +138,13 @@ export default {
   async mounted() {
     this.$refs.plyr.player.autoplay = true;
     this.$refs.plyr.player.loop = true;
-    let getSpotifyUser = async () => {
+    const getSpotifyUser = async () => {
       try {
-        let res = await graphqlClient().query({
-          spotifyUser: {
-            id: true,
-          },
-        });
-        this.$ga.set({ userId: res.spotifyUser.id });
+        const res = await spotify.getMe();
+        this.$ga.set({userId: res.body.id});
       } catch (e) {
         this.$notification.open({
-          message: "Error on getting user profile",
+          message: 'Error on getting user profile',
           description: `Some error has occured, please try again or refresh the page...`,
           icon: <a-icon type="monitor" style="color: red" />,
         });

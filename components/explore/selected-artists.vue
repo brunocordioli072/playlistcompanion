@@ -51,28 +51,28 @@ export default {
   },
   computed: {
     selectedArtists: {
-      get: function () {
-        return this.$store.getters["explore/selectedArtists"];
+      get: function() {
+        return this.$store.getters['explore/selectedArtists'];
       },
-      set: function (val) {
-        this.$store.commit("explore/selectedArtists", val);
+      set: function(val) {
+        this.$store.commit('explore/selectedArtists', val);
       },
     },
     searchedArtists: {
-      get: function () {
-        return this.$store.getters["explore/searchedArtists"];
+      get: function() {
+        return this.$store.getters['explore/searchedArtists'];
       },
-      set: function (val) {
-        this.$store.commit("explore/searchedArtists", val);
+      set: function(val) {
+        this.$store.commit('explore/searchedArtists', val);
       },
     },
   },
   methods: {
     getImageFromArtist(item) {
-      return item.images && item.images.length > 0 ? item.images[0].url : "";
+      return item.images && item.images.length > 0 ? item.images[0].url : '';
     },
     numberToLocaleFormat(number) {
-      return parseFloat(number.toFixed(0)).toLocaleString("pt-br", {
+      return parseFloat(number.toFixed(0)).toLocaleString('pt-br', {
         minimumFractionDigits: 0,
       });
     },

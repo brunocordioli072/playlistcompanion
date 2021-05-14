@@ -21,24 +21,24 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import {mapGetters} from 'vuex';
 
 export default {
   computed: {
     collapsed: {
       get: function() {
-        return this.$store.getters["layout/collapsed"];
+        return this.$store.getters['layout/collapsed'];
       },
       set: function(val) {
-        this.$store.commit("layout/collapsed", val);
-      }
+        this.$store.commit('layout/collapsed', val);
+      },
     },
     ...mapGetters({
-      access_token: "client/access_token",
-      refresh_token: "client/refresh_token",
-      isMobile: "client/isMobile"
-    })
-  }
+      access_token: 'client/access_token',
+      refresh_token: 'client/refresh_token',
+      isMobile: 'client/isMobile',
+    }),
+  },
 };
 </script>
 
