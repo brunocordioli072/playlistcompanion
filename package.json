@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "nuxt",
     "start": "nuxt start",
-    "generate": "nuxt generate",
+    "build": "nuxt generate",
     "test": "jest",
     "deploy": "push-dir --dir=dist --branch=gh-pages --cleanup",
     "lint": "eslint --fix --ext .js,.jsx ."
