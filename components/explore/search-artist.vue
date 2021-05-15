@@ -20,29 +20,28 @@
       <a-space direction="horizontal">
         <a-avatar slot="avatar" :src="getImageFromArtist(item)" />
         <b style="margin-left: 10px">{{ item.name }}</b>
-        <div v-if="!isMobile">
-          <a-tag
-            style="margin-left: 5px"
-            v-for="genre in item.genres"
-            :key="genre"
-            :color="
-              genre === 'loser'
-                ? 'volcano'
-                : genre.length > 5
-                ? 'geekblue'
-                : 'green'
-            "
-            >{{ genre.toUpperCase() }}</a-tag
-          >
-        </div>
+        <a-tag
+          style="margin-left: 5px"
+          v-for="genre in item.genres"
+          :key="genre"
+          :color="
+            genre === 'loser'
+              ? 'volcano'
+              : genre.length > 5
+              ? 'geekblue'
+              : 'green'
+          "
+          >{{ genre.toUpperCase() }}</a-tag
+        >
       </a-space>
     </a-select-option>
   </a-select>
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
 import {spotify} from '../../clients/spotify';
+
+const spotifyAPI = spotify.client();
 
 export default {
   data() {
@@ -52,9 +51,6 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({
-      isMobile: 'client/isMobile',
-    }),
     search: {
       get: function() {
         return this.$store.getters['explore/search'];
@@ -108,11 +104,17 @@ export default {
             const params = enrichQuery(value);
             let res;
             if (!params.artist && !params.track) {
-              res = await spotify.search(value, ['artist', 'track'], {limit: 10});
+              res = await spotifyAPI.search(value, ['artist', 'track'], {
+                limit: 10,
+              });
             } else if (params.artist) {
-              res = await spotify.search(params.artist, ['artist'], {limit: 10});
+              res = await spotifyAPI.search(params.artist, ['artist'], {
+                limit: 10,
+              });
             } else if (params.track) {
-              res = await spotify.search(params.track, ['track'], {limit: 10});
+              res = await spotifyAPI.search(params.track, ['track'], {
+                limit: 10,
+              });
             }
             this.artists = res.body.artists.items;
           } catch (e) {

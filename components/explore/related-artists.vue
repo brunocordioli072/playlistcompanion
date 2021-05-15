@@ -1,8 +1,6 @@
 <template>
   <a-table
-    :style="!isMobile ? 'width: 81vw' : 'width: 95vw'"
-    :size="!isMobile ? 'default' : 'small'"
-    :columns="!isMobile ? relatedArtistsColumns : relatedArtistsColumnsMobile"
+    :columns=" relatedArtistsColumns"
     :pagination="{ pageSize: 5 }"
     :data-source="relatedArtists"
   >
@@ -33,7 +31,6 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
 
 export default {
   data() {
@@ -92,9 +89,6 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({
-      isMobile: 'client/isMobile',
-    }),
     relatedArtists: {
       get: function() {
         return this.$store.getters['explore/relatedArtists'];

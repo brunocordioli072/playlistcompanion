@@ -1,19 +1,11 @@
-import moment from 'moment';
-
 export default {
-  access_token(state) {
-    return state.access_token;
+  accessToken(state) {
+    return state.accessToken;
   },
-  refresh_token(state) {
-    return state.refresh_token;
+  refreshToken(state) {
+    return state.refreshToken;
   },
-  expires_in(state) {
-    return state.expires_in;
-  },
-  isAuthenticated(state) {
-    return state.expires_in && state.expires_in >= +moment();
-  },
-  isMobile(state) {
-    return state.isMobile;
+  expiresIn(state) {
+    return state.expiresIn;
   },
 };

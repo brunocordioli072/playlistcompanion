@@ -39,8 +39,10 @@
 </template>
 
 <script>
-import {spotify} from '../../clients/spotify';
 import {mapGetters} from 'vuex';
+import {spotify} from '../../clients/spotify';
+
+const spotifyAPI = spotify.client();
 
 export default {
   props: {
@@ -57,7 +59,7 @@ export default {
     async playTopTrackByArtist(item) {
       this.playerIsPlaying = false;
       try {
-        const res = await spotify.getArtistTopTracks(item.id, 'GB');
+        const res = await spotifyAPI.getArtistTopTracks(item.id, 'GB');
         const tracks = res.body.tracks;
         this.sourceArtists = tracks[0].artists.map((a) => a.name);
         this.source = tracks[0].preview_url;

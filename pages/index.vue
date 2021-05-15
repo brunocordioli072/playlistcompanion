@@ -1,7 +1,9 @@
 <template>
   <div class="container">
     <a-space direction="vertical">
-      <div style="max-width: 800px; width: 80vw; font-size: 16px; margin: 0 420px">
+      <div
+        style="max-width: 800px; width: 80vw; font-size: 16px; margin: 0 420px"
+      >
         <h2>Do your own playlist!</h2>
         <p>
           For people who have
@@ -36,23 +38,21 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
+import moment from 'moment';
 
 export default {
   methods: {
-    login() {
-      this.$ga.event({
-        eventCategory: 'Button',
-        eventAction: 'Click',
-        eventLabel: 'Tried to Login',
-      });
-      window.location.replace(`${process.env.WORKER_URL}/auth/spotify/login`);
+    async login() {
+      const loginURL = await this.$axios.$get(
+          `${process.env.WORKER_URL}/auth/spotify/login`,
+      );
+      window.location.href = loginURL;
     },
   },
   computed: {
-    ...mapGetters({
-      isAuthenticated: 'client/isAuthenticated',
-    }),
+    isAuthenticated() {
+      return this.$store.getters['client/expiresIn'] >= +moment();
+    },
   },
 };
 </script>

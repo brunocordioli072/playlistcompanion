@@ -10,18 +10,13 @@
     <a-menu theme="dark" mode="inline">
       <a-menu-item @click="$router.push('/explore')" key="1">
         <a-icon type="compass" />
-        <span>Spotify</span>
+        <span>Explore</span>
       </a-menu-item>
-      <!-- <a-menu-item @click="$router.push('/explore/youtube')" key="1">
-        <a-icon type="compass" />
-        <span>Youtube</span>
-      </a-menu-item> -->
     </a-menu>
   </a-layout-sider>
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
 
 export default {
   computed: {
@@ -33,13 +28,6 @@ export default {
         this.$store.commit('layout/collapsed', val);
       },
     },
-    ...mapGetters({
-      access_token: 'client/access_token',
-      refresh_token: 'client/refresh_token',
-      isMobile: 'client/isMobile',
-    }),
   },
 };
 </script>
-
-<style></style>

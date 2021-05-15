@@ -4,14 +4,15 @@
     <a-layout>
       <a-layout-header style="background: #fff; padding: 0">
         <a-button
-          v-if="isMobile"
           type="link"
           icon="menu-unfold"
           size="large"
           @click="collapsed = !collapsed"
         />
       </a-layout-header>
-      <a-layout-content :style="isMobile ?  'margin: 16px 4px' : 'margin: 16px 16px'">
+      <a-layout-content
+        :style="'margin: 16px 16px'"
+      >
         <div
           :style="{ padding: '20px', background: '#fff', minHeight: '360px' }"
         >
@@ -24,9 +25,9 @@
 </template>
 <script>
 import moment from 'moment';
-import {mapGetters} from 'vuex';
 
 export default {
+  middleware: 'routes',
   computed: {
     collapsed: {
       get: function() {
@@ -36,80 +37,38 @@ export default {
         this.$store.commit('layout/collapsed', val);
       },
     },
-    ...mapGetters({
-      access_token: 'client/access_token',
-      refresh_token: 'client/refresh_token',
-      isMobile: 'client/isMobile',
-    }),
+    isAuthenticated() {
+      return this.$store.getters['client/expiresIn'] >= +moment();
+    },
   },
   watch: {
-    '$router.query': function() {
-      this.setAuth();
-    },
-    'isAuthenticated': async function() {
-      if (!this.isAuthenticated) {
-        this.$router.go('/');
-      }
+    '$route.query.code': {
+      async handler() {
+        if (this.$route.query.code) {
+          this.setAuth(this.$route.query.code);
+        }
+      },
+      immediate: true,
     },
   },
   methods: {
-    setAuth() {
-      if (this.$route.query) {
-        const access_token = this.$route.query.access_token;
-        const expires_in = this.$route.query.expires_in;
-        const refresh_token = this.$route.query.refresh_token;
-        if (access_token) {
-          this.$store.commit('client/setAccess_token', access_token);
-        }
-        if (refresh_token) {
-          this.$store.commit('client/setRefresh_token', access_token);
-        }
-        if (expires_in) {
-          this.$store.commit(
-              'client/setExpires_in',
-              expires_in * 1000 + +moment(),
-          );
-        }
-        this.$ga.event({
-          eventCategory: 'Auth',
-          eventAction: 'Click',
-          eventLabel: 'Logged in',
-        });
-        if (this.$store.getters['isAuthenticated']) {
+    async setAuth(code) {
+      const res = await this.$axios.$get(
+          `${process.env.WORKER_URL}/auth/spotify/credentials?code=${code}`,
+      );
+      if (res.statusCode == 200) {
+        const data = res.body;
+        this.$store.commit('client/accessToken', data.access_token);
+        this.$store.commit('client/refreshToken', data.access_token);
+        this.$store.commit(
+            'client/expiresIn',
+            +moment().add(data.expires_in, 'seconds'),
+        );
+        if (this.$store.getters['client/expiresIn'] >= +moment()) {
           this.$router.push('/explore');
         }
       }
     },
-    async refreshToken() {
-      const res = await this.$axios.$get(
-          `/auth/spotify/refresh_token?
-        refresh_token=${this.$store.getters['client/refresh_token']}`,
-      );
-      this.$store.commit('client/setAccess_token', res.access_token);
-      this.$store.commit('client/setExpires_in', 3600 * 1000 + +moment());
-      this.$axios.setToken(this.$store.getters['client/access_token']);
-    },
-  },
-  async mounted() {
-    this.$store.commit('client/isMobile', window.innerWidth < 1100);
-    this.setAuth();
-    this.$axios.setToken(this.$store.getters['client/access_token']);
-    this.$axios.onError(async (error) => {
-      if (error.response.status === 401) {
-        await this.refreshToken();
-        this.$notification.open({
-          message: 'Error on auth',
-          description: `Some error has occured, please try again...`,
-          icon: <a-icon type="monitor" style="color: red" />,
-        });
-      }
-    });
-    if (this.expired_token) {
-      this.$router.push('/');
-    }
-    if (this.$route.query.access_token) {
-      this.$router.push('/');
-    }
   },
 };
 </script>
