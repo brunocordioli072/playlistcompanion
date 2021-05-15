@@ -64,9 +64,6 @@ export default {
             'client/expiresIn',
             +moment().add(data.expires_in, 'seconds'),
         );
-        if (this.$store.getters['client/expiresIn'] >= +moment()) {
-          this.$router.push('/explore');
-        }
       }
     },
   },

@@ -43,10 +43,18 @@ import moment from 'moment';
 export default {
   methods: {
     async login() {
-      const loginURL = await this.$axios.$get(
-          `${process.env.WORKER_URL}/auth/spotify/login`,
-      );
-      window.location.href = loginURL;
+      try {
+        const loginURL = await this.$axios.$get(
+            `${process.env.WORKER_URL}/auth/spotify/login`,
+        );
+        window.location.href = loginURL;
+      } catch (e) {
+        this.$notification.open({
+          message: 'Error on login',
+          description: `Some error has occured, please try again or refresh the page...`,
+          icon: <a-icon type="monitor" style="color: red" />,
+        });
+      }
     },
   },
   computed: {
