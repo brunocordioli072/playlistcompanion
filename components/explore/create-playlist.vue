@@ -17,10 +17,6 @@
 </template>
 
 <script>
-import {spotify} from '../../clients/spotify';
-
-const spotifyAPI = spotify.client();
-
 export default {
   data() {
     return {
@@ -67,7 +63,7 @@ export default {
     async createPlaylist() {
       this.creatingPlaylist = true;
       try {
-        const res = await spotifyAPI.createPlaylist(this.playlistName, {
+        const res = await this.$spotify.api.createPlaylist(this.playlistName, {
           public: false,
         });
         const playlist = res.body;
@@ -76,14 +72,14 @@ export default {
           const artistIds = this.selectedArtists.map((a) => a.id);
           for (let index = 0; index < artistIds.length; index++) {
             const artistId = artistIds[index];
-            const trackSearch = await spotifyAPI.getArtistTopTracks(
+            const trackSearch = await this.$spotify.api.getArtistTopTracks(
                 artistId,
                 'GB',
             );
             tracks.push(...trackSearch.body.tracks);
           }
           const tracksURIs = tracks.map((t) => t.uri);
-          await spotifyAPI.addTracksToPlaylist(playlist.id, tracksURIs);
+          await this.$spotify.api.addTracksToPlaylist(playlist.id, tracksURIs);
         } catch (e) {
           this.$notification.open({
             message: 'Error on saving musics',

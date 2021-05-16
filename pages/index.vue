@@ -38,16 +38,11 @@
 </template>
 
 <script>
-import moment from 'moment';
-
 export default {
   methods: {
     async login() {
       try {
-        const loginURL = await this.$axios.$get(
-            `${process.env.WORKER_URL}/auth/spotify/login`,
-        );
-        window.location.href = loginURL;
+        await this.$auth.login();
       } catch (e) {
         this.$notification.open({
           message: 'Error on login',
@@ -59,7 +54,7 @@ export default {
   },
   computed: {
     isAuthenticated() {
-      return this.$store.getters['client/expiresIn'] >= +moment();
+      return this.$auth.accessToken;
     },
   },
 };

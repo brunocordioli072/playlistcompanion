@@ -39,10 +39,6 @@
 </template>
 
 <script>
-import {spotify} from '../../clients/spotify';
-
-const spotifyAPI = spotify.client();
-
 export default {
   data() {
     return {
@@ -104,15 +100,15 @@ export default {
             const params = enrichQuery(value);
             let res;
             if (!params.artist && !params.track) {
-              res = await spotifyAPI.search(value, ['artist', 'track'], {
+              res = await this.$spotify.api.search(value, ['artist', 'track'], {
                 limit: 10,
               });
             } else if (params.artist) {
-              res = await spotifyAPI.search(params.artist, ['artist'], {
+              res = await this.$spotify.api.search(params.artist, ['artist'], {
                 limit: 10,
               });
             } else if (params.track) {
-              res = await spotifyAPI.search(params.track, ['track'], {
+              res = await this.$spotify.api.search(params.track, ['track'], {
                 limit: 10,
               });
             }

@@ -51,7 +51,7 @@ export default {
    ** Plugins to load before mounting the App
    ** https://nuxtjs.org/guide/plugins
    */
-  plugins: ['@/plugins/antd-ui', '@/plugins/main'],
+  plugins: ['@/plugins/antd-ui', '@/plugins/main', '@/plugins/auth', '@/plugins/spotify-api'],
   /*
    ** Auto import components
    ** See https://nuxtjs.org/api/configuration-components

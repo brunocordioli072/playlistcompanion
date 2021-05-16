@@ -24,48 +24,11 @@
   </a-layout>
 </template>
 <script>
-import moment from 'moment';
 
 export default {
   middleware: 'routes',
-  computed: {
-    collapsed: {
-      get: function() {
-        return this.$store.getters['layout/collapsed'];
-      },
-      set: function(val) {
-        this.$store.commit('layout/collapsed', val);
-      },
-    },
-    isAuthenticated() {
-      return this.$store.getters['client/expiresIn'] >= +moment();
-    },
-  },
-  watch: {
-    '$route.query.code': {
-      async handler() {
-        if (this.$route.query.code) {
-          this.setAuth(this.$route.query.code);
-        }
-      },
-      immediate: true,
-    },
-  },
-  methods: {
-    async setAuth(code) {
-      const res = await this.$axios.$get(
-          `${process.env.WORKER_URL}/auth/spotify/credentials?code=${code}`,
-      );
-      if (res.statusCode == 200) {
-        const data = res.body;
-        this.$store.commit('client/accessToken', data.access_token);
-        this.$store.commit('client/refreshToken', data.access_token);
-        this.$store.commit(
-            'client/expiresIn',
-            +moment().add(data.expires_in, 'seconds'),
-        );
-      }
-    },
+  mounted() {
+    this.$auth.initSession();
   },
 };
 </script>

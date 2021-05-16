@@ -57,10 +57,6 @@
 
 <script>
 import {mapGetters} from 'vuex';
-import {spotify} from '../clients/spotify';
-
-const spotifyAPI = spotify.client();
-
 export default {
   computed: {
     ...mapGetters({
@@ -124,7 +120,7 @@ export default {
       if (this.searchedArtists.length > 0) {
         const artistId = this.searchedArtists[0].id;
         try {
-          const res = await spotifyAPI.getArtistRelatedArtists(artistId);
+          const res = await this.$spotify.api.getArtistRelatedArtists(artistId);
           this.relatedArtists = res.body.artists;
         } catch (e) {
           this.$notification.open({
@@ -142,12 +138,12 @@ export default {
   async mounted() {
     this.$refs.plyr.player.autoplay = true;
     this.$refs.plyr.player.loop = true;
-    const res = await spotifyAPI.getArtist('43ZHCT0cAZBISjO8DG9PnE');
+    const res = await this.$spotify.api.getArtist('43ZHCT0cAZBISjO8DG9PnE');
     this.updateSearchedArtist(res.body);
     this.fetchRelatedArtists();
     const getSpotifyUser = async () => {
       try {
-        const res = await spotifyAPI.getMe();
+        const res = await this.$spotify.api.getMe();
         this.$ga.set({userId: res.body.id});
       } catch (e) {
         this.$notification.open({
