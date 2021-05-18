@@ -55,16 +55,41 @@
   </div>
 </template>
 
-<script>
-import {mapGetters} from 'vuex';
-export default {
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
   computed: {
-    ...mapGetters({
-      playerIsPlaying: 'explore/playerIsPlaying',
-      playerSource: 'explore/playerSource',
-    }),
+    plyr: {
+      get() {
+        return (this.$refs.plyr as Vue & { player: {
+        stop: Function
+        play: Function
+        paused: boolean
+        source: Object
+        autoplay: boolean
+        loop: boolean
+      }}).player;
+      },
+    },
+    playerIsPlaying: {
+      get() {
+        return this.$store.getters['explore/playerIsPlaying'];
+      },
+      set: function(val) {
+        this.$store.commit('explore/playerIsPlaying', val);
+      },
+    },
+    playerSource: {
+      get() {
+        return this.$store.getters['explore/playerSource'];
+      },
+      set: function(val) {
+        this.$store.commit('explore/playerSource', val);
+      },
+    },
     searchedArtists: {
-      get: function() {
+      get() {
         return this.$store.getters['explore/searchedArtists'];
       },
       set: function(val) {
@@ -99,14 +124,14 @@ export default {
   watch: {
     playerIsPlaying() {
       if (!this.playerIsPlaying) {
-        this.$refs.plyr.player.stop();
+        this.plyr.stop();
       }
-      if (this.playerIsPlaying && this.$refs.plyr.player.paused == true) {
-        this.$refs.plyr.player.play();
+      if (this.playerIsPlaying && this.plyr.paused == true) {
+        this.plyr.play();
       }
     },
     playerSource() {
-      this.$refs.plyr.player.source = {
+      this.plyr.source = {
         type: 'audio',
         sources: [{src: this.playerSource, type: 'audio/mp3'}],
       };
@@ -122,40 +147,21 @@ export default {
         try {
           const res = await this.$spotify.api.getArtistRelatedArtists(artistId);
           this.relatedArtists = res.body.artists;
-        } catch (e) {
-          this.$notification.open({
-            message: 'Error on fetching related artists',
-            description: `Some error has occured, please try again or refresh the page...`,
-            icon: <a-icon type="monitor" style="color: red" />,
-          });
-        }
+        } catch (e) {}
       }
     },
-    updateSearchedArtist(item) {
+    updateSearchedArtist(item: any) {
       this.searchedArtists = [item];
     },
   },
   async mounted() {
-    this.$refs.plyr.player.autoplay = true;
-    this.$refs.plyr.player.loop = true;
+    this.plyr.autoplay = true;
+    this.plyr.loop = true;
     const res = await this.$spotify.api.getArtist('43ZHCT0cAZBISjO8DG9PnE');
     this.updateSearchedArtist(res.body);
     this.fetchRelatedArtists();
-    const getSpotifyUser = async () => {
-      try {
-        const res = await this.$spotify.api.getMe();
-        this.$ga.set({userId: res.body.id});
-      } catch (e) {
-        this.$notification.open({
-          message: 'Error on getting user profile',
-          description: `Some error has occured, please try again or refresh the page...`,
-          icon: <a-icon type="monitor" style="color: red" />,
-        });
-      }
-    };
-    setTimeout(getSpotifyUser, 2000);
   },
-};
+});
 </script>
 
 <style>

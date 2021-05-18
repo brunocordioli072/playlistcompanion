@@ -37,18 +37,20 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
   methods: {
     async login() {
       try {
         await this.$auth.login();
       } catch (e) {
-        this.$notification.open({
-          message: 'Error on login',
-          description: `Some error has occured, please try again or refresh the page...`,
-          icon: <a-icon type="monitor" style="color: red" />,
-        });
+        // this.$notification.open({
+        //   message: 'Error on login',
+        //   description: `Some error has occured, please try again or refresh the page...`,
+        //   icon: <a-icon type="monitor" style="color: red" />,
+        // });
       }
     },
   },
@@ -57,7 +59,10 @@ export default {
       return this.$auth.accessToken;
     },
   },
-};
+  mounted() {
+    this.$spotify.api.getAccessToken();
+  },
+});
 </script>
 
 <style>

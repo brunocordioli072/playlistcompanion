@@ -60,7 +60,7 @@ export default {
   /*
    ** Nuxt.js dev-modules
    */
-  buildModules: ['@nuxtjs/google-analytics', '@nuxtjs/dotenv'],
+  buildModules: ['@nuxtjs/google-analytics', '@nuxtjs/dotenv', '@nuxt/typescript-build'],
   googleAnalytics: {
     id: 'UA-178423300-1',
     debug: {

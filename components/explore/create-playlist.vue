@@ -17,7 +17,9 @@
 </template>
 
 <script>
-export default {
+import Vue from 'vue';
+
+export default Vue.extend({
   data() {
     return {
       playlistName: null,
@@ -107,7 +109,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style></style>

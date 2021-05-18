@@ -17,8 +17,9 @@
 </template>
 
 <script>
+import Vue from 'vue';
 
-export default {
+export default Vue.extend({
   computed: {
     collapsed: {
       get: function() {
@@ -29,5 +30,5 @@ export default {
       },
     },
   },
-};
+});
 </script>

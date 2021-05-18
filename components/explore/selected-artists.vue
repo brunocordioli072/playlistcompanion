@@ -45,7 +45,9 @@
 </template>
 
 <script>
-export default {
+import Vue from 'vue';
+
+export default Vue.extend({
   data() {
     return {};
   },
@@ -83,7 +85,7 @@ export default {
       this.selectedArtists = this.selectedArtists.filter((a) => a != item);
     },
   },
-};
+});
 </script>
 
 <style>

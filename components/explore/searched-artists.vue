@@ -49,7 +49,9 @@
 </template>
 
 <script>
-export default {
+import Vue from 'vue';
+
+export default Vue.extend({
   data() {
     return {};
   },
@@ -73,7 +75,7 @@ export default {
       return item.images && item.images.length > 0 ? item.images[0].url : '';
     },
   },
-};
+});
 </script>
 
 <style>

@@ -31,8 +31,9 @@
 </template>
 
 <script>
+import Vue from 'vue';
 
-export default {
+export default Vue.extend({
   data() {
     return {
       relatedArtistsColumns: [
@@ -111,7 +112,7 @@ export default {
       return item.images && item.images.length > 0 ? item.images[0].url : '';
     },
   },
-};
+});
 </script>
 
 <style>

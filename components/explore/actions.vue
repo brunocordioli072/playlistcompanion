@@ -39,9 +39,10 @@
 </template>
 
 <script>
+import Vue from 'vue';
 import {mapGetters} from 'vuex';
 
-export default {
+export default Vue.extend({
   props: {
     item: Object,
     search: Boolean,
@@ -131,7 +132,7 @@ export default {
       console.log(this.playerIsLoading);
     },
   },
-};
+});
 </script>
 
 <style>
