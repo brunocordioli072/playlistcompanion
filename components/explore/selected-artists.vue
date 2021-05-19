@@ -44,7 +44,7 @@
   </a-list>
 </template>
 
-<script>
+<script lang="ts">
 import Vue from 'vue';
 
 export default Vue.extend({
@@ -53,36 +53,36 @@ export default Vue.extend({
   },
   computed: {
     selectedArtists: {
-      get: function() {
+      get(): any {
         return this.$store.getters['explore/selectedArtists'];
       },
-      set: function(val) {
+      set(val: any): void {
         this.$store.commit('explore/selectedArtists', val);
       },
     },
     searchedArtists: {
-      get: function() {
+      get(): any {
         return this.$store.getters['explore/searchedArtists'];
       },
-      set: function(val) {
+      set(val: any): void {
         this.$store.commit('explore/searchedArtists', val);
       },
     },
   },
   methods: {
-    getImageFromArtist(item) {
+    getImageFromArtist(item: { images: string|any[]; }) {
       return item.images && item.images.length > 0 ? item.images[0].url : '';
     },
-    numberToLocaleFormat(number) {
+    numberToLocaleFormat(number: number) {
       return parseFloat(number.toFixed(0)).toLocaleString('pt-br', {
         minimumFractionDigits: 0,
       });
     },
-    updateSearchedArtist(item) {
+    updateSearchedArtist(item: any) {
       this.searchedArtists = [item];
     },
-    removeSelectedArtists(item) {
-      this.selectedArtists = this.selectedArtists.filter((a) => a != item);
+    removeSelectedArtists(item: any) {
+      this.selectedArtists = this.selectedArtists.filter((a: any) => a != item);
     },
   },
 });

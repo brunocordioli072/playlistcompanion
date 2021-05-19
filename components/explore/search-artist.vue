@@ -38,60 +38,60 @@
   </a-select>
 </template>
 
-<script>
+<script lang="ts">
 import Vue from 'vue';
 
 export default Vue.extend({
   data() {
     return {
       fetchingArtists: false,
-      searchTimer: null,
+      searchTimer: 0,
     };
   },
   computed: {
     search: {
-      get: function() {
+      get(): any {
         return this.$store.getters['explore/search'];
       },
-      set: function(val) {
+      set(val: any): void {
         this.$store.commit('explore/search', val);
       },
     },
     artists: {
-      get: function() {
+      get(): any {
         return this.$store.getters['explore/artists'];
       },
-      set: function(val) {
+      set(val: any): void {
         this.$store.commit('explore/artists', val);
       },
     },
     searchedArtists: {
-      get: function() {
+      get(): any {
         return this.$store.getters['explore/searchedArtists'];
       },
-      set: function(val) {
+      set(val: any): void {
         this.$store.commit('explore/searchedArtists', val);
       },
     },
   },
   methods: {
-    handleChange(search) {
+    handleChange(search: any) {
       Object.assign(this, {
         search,
       });
     },
-    getImageFromArtist(item) {
+    getImageFromArtist(item: { images: string|any[]; }) {
       return item.images && item.images.length > 0 ? item.images[0].url : '';
     },
-    updateSearchedArtist(item) {
+    updateSearchedArtist(item: any) {
       this.searchedArtists = [item];
     },
-    async fetchArtists(value) {
+    async fetchArtists(value: string) {
       if (value) {
-        const enrichQuery = (query) => {
+        const enrichQuery = (query: string) => {
           return (
             query.match(new RegExp('([^?=&]+)(=([^&]*))?', 'g')) || []
-          ).reduce(function(result, each, n, every) {
+          ).reduce(function(result: any, each: any, n: any, every: any) {
             const [key, value] = each.split(':');
             result[key] = value;
             return result;
@@ -100,34 +100,32 @@ export default Vue.extend({
         const search = async () => {
           try {
             const params = enrichQuery(value);
-            let res;
-            if (!params.artist && !params.track) {
-              res = await this.$spotify.api.search(value, ['artist', 'track'], {
+            let res: SpotifyApi.SearchResponse = {};
+            if (params.artist) {
+              res = (await this.$spotify.api.search(params.artist, ['artist'], {
                 limit: 10,
-              });
-            } else if (params.artist) {
-              res = await this.$spotify.api.search(params.artist, ['artist'], {
-                limit: 10,
-              });
+              })).body;
             } else if (params.track) {
-              res = await this.$spotify.api.search(params.track, ['track'], {
+              res = (await this.$spotify.api.search(params.track, ['track'], {
                 limit: 10,
-              });
+              })).body;
+            } else {
+              res = (await this.$spotify.api.search(value, ['artist', 'track'], {
+                limit: 10,
+              })).body;
             }
-            this.artists = res.body.artists.items;
+            this.artists = res?.artists?.items;
           } catch (e) {
-            this.$notification.open({
+            this.$notification['info']({
               message: 'Error on fetching artists',
               description: `Some error has occured, please try again or refresh the page...`,
-              icon: <a-icon type="monitor" style="color: red" />,
             });
           }
         };
 
         this.artists = [];
         this.fetchingArtists = true;
-        clearTimeout(this.searchTimer);
-        this.searchTimer = setTimeout(search, 300);
+        await search();
       }
     },
   },

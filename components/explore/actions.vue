@@ -38,98 +38,115 @@
   </a-space>
 </template>
 
-<script>
-import Vue from 'vue';
-import {mapGetters} from 'vuex';
+<script lang="ts">
+import Vue, {PropOptions} from 'vue';
 
 export default Vue.extend({
+
   props: {
-    item: Object,
-    search: Boolean,
+    item: Object as PropOptions<any>,
+    search: Boolean as PropOptions<any>,
   },
   data() {
     return {
       source: '',
-      sourceArtists: [],
+      sourceArtists: [''],
     };
   },
-  methods: {
-    async playTopTrackByArtist(item) {
-      this.playerIsPlaying = false;
-      try {
-        const res = await this.$spotify.api.getArtistTopTracks(item.id, 'GB');
-        const tracks = res.body.tracks;
-        this.sourceArtists = tracks[0].artists.map((a) => a.name);
-        this.source = tracks[0].preview_url;
-        this.$store.commit('explore/playerSource', tracks[0].preview_url);
-        this.playerIsPlaying = true;
-      } catch (e) {
-        this.$notification.open({
-          message: 'Error fetching artists tracks',
-          description: `Some error has occured, please try again or refresh the page...`,
-          icon: <a-icon type="monitor" style="color: red" />,
-        });
-      }
-    },
-    removeSelectedArtists(item) {
-      this.selectedArtists = this.selectedArtists.filter((a) => a != item);
-    },
-    stopPlayer() {
-      this.sourceArtists = [];
-      this.$store.commit('explore/playerIsPlaying', false);
-    },
-    updateSearchedArtist(item) {
-      this.searchedArtists = [item];
-    },
-    addSelectedArtists(item) {
-      this.$store.commit('explore/addSelectedArtist', item);
-    },
-  },
   computed: {
-    ...mapGetters({
-      selectedArtistsNames: 'explore/selectedArtistsNames',
-      playerIsPlaying: 'explore/playerIsPlaying',
-      playerIsLoading: 'explore/playerIsLoading',
-      playerSource: 'explore/playerSource',
-    }),
-    canBePlayed() {
+    selectedArtistsNames: {
+      get(): any {
+        return this.$store.getters['explore/selectedArtistsNames'];
+      },
+      set(val: any): void {
+        this.$store.commit('explore/selectedArtistsNames', val);
+      },
+    },
+    playerIsPlaying: {
+      get(): any {
+        return this.$store.getters['explore/playerIsPlaying'];
+      },
+      set(val: any): void {
+        this.$store.commit('explore/playerIsPlaying', val);
+      },
+    },
+    playerIsLoading: {
+      get(): any {
+        return this.$store.getters['explore/playerIsLoading'];
+      },
+      set(val: any): void {
+        this.$store.commit('explore/playerIsLoading', val);
+      },
+    },
+    playerSource: {
+      get(): any {
+        return this.$store.getters['explore/playerSource'];
+      },
+      set(val: any): void {
+        this.$store.commit('explore/playerSource', val);
+      },
+    },
+    searchedArtists: {
+      get(): any {
+        return this.$store.getters['explore/searchedArtists'];
+      },
+      set(val: any): void {
+        this.$store.commit('explore/searchedArtists', val);
+      },
+    },
+    selectedArtists: {
+      get(): any {
+        return this.$store.getters['explore/selectedArtists'];
+      },
+      set(val: any): void {
+        this.$store.commit('explore/selectedArtists', val);
+      },
+    },
+    canBePlayed(): boolean {
       return (
         this.sourceArtists.includes(this.item.name) &&
         this.playerIsPlaying &&
         this.source == this.playerSource
       );
     },
-    hasArtistOnPlaylist() {
+    hasArtistOnPlaylist(): boolean {
       return this.selectedArtistsNames.includes(this.item.name);
-    },
-    searchedArtists: {
-      get: function() {
-        return this.$store.getters['explore/searchedArtists'];
-      },
-      set: function(val) {
-        this.$store.commit('explore/searchedArtists', val);
-      },
-    },
-    selectedArtists: {
-      get: function() {
-        return this.$store.getters['explore/selectedArtists'];
-      },
-      set: function(val) {
-        this.$store.commit('explore/selectedArtists', val);
-      },
-    },
-    playerIsPlaying: {
-      get: function() {
-        return this.$store.getters['explore/playerIsPlaying'];
-      },
-      set: function(val) {
-        this.$store.commit('explore/playerIsPlaying', val);
-      },
     },
   },
   watch: {
     playerIsLoading() {
       console.log(this.playerIsLoading);
+    },
+  },
+  methods: {
+    async playTopTrackByArtist(item: any) {
+      this.playerIsPlaying = false;
+      try {
+        const res = await this.$spotify.api.getArtistTopTracks(item.id, 'GB');
+        const tracks = res.body.tracks;
+        this.sourceArtists = tracks[0].artists.map((a) => a.name);
+        this.source = tracks[0].preview_url || '';
+        this.$store.commit('explore/playerSource', tracks[0].preview_url);
+        this.playerIsPlaying = true;
+      } catch (e) {
+        this.$notification['info']({
+          message: 'Error fetching artists tracks',
+          description: `Some error has occured, please try again or refresh the page...`,
+        });
+      }
+    },
+    removeSelectedArtists(item: any) {
+      this.selectedArtists = this.selectedArtists.filter((a: any) => a != item);
+    },
+    stopPlayer() {
+      this.sourceArtists = [];
+      this.$store.commit('explore/playerIsPlaying', false);
+    },
+    updateSearchedArtist(item: any) {
+      this.searchedArtists = [item];
+    },
+    addSelectedArtists(item: any) {
+      this.$store.commit('explore/addSelectedArtist', item);
     },
   },
 });

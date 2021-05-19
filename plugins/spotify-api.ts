@@ -8,20 +8,15 @@ const spotifyAPI = new class extends Vue.extend({
     api: new SpotifyWebApi(),
   }),
   computed: {
-    accessToken: {
-      get() {
-        return localStorage.getItem('access_token');
-      },
-      set(accessToken: string) {
-        localStorage.setItem('access_token', accessToken);
-      },
+    authenticated() {
+      return this.$auth.authenticated;
     },
   },
   watch: {
-    accessToken: {
+    authenticated: {
       handler() {
         this.api = new SpotifyWebApi({
-          accessToken: this.accessToken || '',
+          accessToken: localStorage.getItem('access_token') || '',
         });
       },
       immediate: true,

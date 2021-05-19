@@ -16,37 +16,37 @@
   </a-modal>
 </template>
 
-<script>
+<script lang="ts">
 import Vue from 'vue';
 
 export default Vue.extend({
   data() {
     return {
-      playlistName: null,
+      playlistName: '',
     };
   },
   computed: {
     selectedArtists: {
-      get: function() {
+      get(): any {
         return this.$store.getters['explore/selectedArtists'];
       },
-      set: function(val) {
+      set(val: any): void {
         this.$store.commit('explore/selectedArtists', val);
       },
     },
     creatingPlaylist: {
-      get: function() {
+      get(): any {
         return this.$store.getters['explore/creatingPlaylist'];
       },
-      set: function(val) {
+      set(val: any): void {
         this.$store.commit('explore/creatingPlaylist', val);
       },
     },
     modalVisible: {
-      get: function() {
+      get(): any {
         return this.$store.getters['explore/modalVisible'];
       },
-      set: function(val) {
+      set(val: any): void {
         this.$store.commit('explore/modalVisible', val);
       },
     },
@@ -71,7 +71,7 @@ export default Vue.extend({
         const playlist = res.body;
         try {
           const tracks = [];
-          const artistIds = this.selectedArtists.map((a) => a.id);
+          const artistIds = this.selectedArtists.map((a: any) => a.id);
           for (let index = 0; index < artistIds.length; index++) {
             const artistId = artistIds[index];
             const trackSearch = await this.$spotify.api.getArtistTopTracks(
@@ -83,28 +83,20 @@ export default Vue.extend({
           const tracksURIs = tracks.map((t) => t.uri);
           await this.$spotify.api.addTracksToPlaylist(playlist.id, tracksURIs);
         } catch (e) {
-          this.$notification.open({
+          this.$notification['info']({
             message: 'Error on saving musics',
             description: `Some error has occured, please try again...`,
-            icon: <a-icon type="monitor" style="color: red" />,
           });
         }
-        this.$notification.open({
+        this.$notification['info']({
           message: 'Playlist created!!!',
           description: `Playlist added to your spotify with the name ${this.playlistName}`,
-          icon: <a-icon type="smile" style="color: #108ee9" />,
-        });
-        this.$ga.event({
-          eventCategory: 'Button',
-          eventAction: 'Click',
-          eventLabel: 'Playlist Created',
         });
         this.clearView();
       } catch (e) {
-        this.$notification.open({
+        this.$notification['info']({
           message: 'Error on creating playlist',
           description: `Some error has occured, please try again...`,
-          icon: <a-icon type="monitor" style="color: red" />,
         });
       }
     },

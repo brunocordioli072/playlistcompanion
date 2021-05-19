@@ -4,6 +4,9 @@ import moment from 'moment';
 import axios from 'axios';
 
 const auth = new (class Auth extends Vue.extend({
+  data: () => ({
+    authenticated: false,
+  }),
   computed: {
     accessToken: {
       get() {
@@ -46,6 +49,16 @@ const auth = new (class Auth extends Vue.extend({
       },
       immediate: true,
     },
+    'authenticated': {
+      async handler() {
+        if (!this.authenticated) {
+          this.$notification['info']({
+            message: 'Session Expired',
+            description: `Some error has occured, please try again or refresh the page...`,
+          });
+        }
+      },
+    },
   },
   methods: {
     async checkVuex() {
@@ -54,7 +67,7 @@ const auth = new (class Auth extends Vue.extend({
       }
     },
     expirationDate() {
-      return this.expiresAt || 0 - +moment();
+      return this.expiresAt - +moment();
     },
 
     async login() {
@@ -64,11 +77,9 @@ const auth = new (class Auth extends Vue.extend({
       window.location.href = data;
     },
     logout() {
-      return new Promise(async (resolve, reject) => {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('expires_at');
-        sessionStorage.removeItem('vuex_expires_at');
-      });
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('expires_at');
+      sessionStorage.removeItem('vuex_expires_at');
     },
     isAuthenticated() {
       return new Date().getTime() < this.expiresAt || 0;
@@ -82,20 +93,18 @@ const auth = new (class Auth extends Vue.extend({
         this.expiresAt = authResult.expires_in;
         this.vuexExpiresAt = 24 * 60;
         this.accessToken = authResult.access_token;
+        this.authenticated = true;
       }
     },
     initSession() {
-      return new Promise((resolve) => {
-        if (this.isAuthenticated()) {
-          setTimeout(this.refreshTokens, this.expirationDate());
-        }
-      });
+      console.log( this.expirationDate());
+      
+      setTimeout(this.refreshTokens, this.expirationDate());
     },
     async refreshTokens() {
-      if (!this.isAuthenticated()) {
-        await this.login();
+      if (true) {
+        this.authenticated = false;
       }
-      setTimeout(this.refreshTokens, this.expirationDate());
     },
   },
 }) {})();

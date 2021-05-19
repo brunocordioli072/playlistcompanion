@@ -30,7 +30,7 @@
   </a-table>
 </template>
 
-<script>
+<script lang="ts">
 import Vue from 'vue';
 
 export default Vue.extend({
@@ -91,24 +91,24 @@ export default Vue.extend({
   },
   computed: {
     relatedArtists: {
-      get: function() {
+      get(): any {
         return this.$store.getters['explore/relatedArtists'];
       },
-      set: function(val) {
+      set(val: any): void {
         this.$store.commit('explore/relatedArtists', val);
       },
     },
     modalVisible: {
-      get: function() {
+      get(): any {
         return this.$store.getters['explore/modalVisible'];
       },
-      set: function(val) {
+      set(val: any): void {
         this.$store.commit('explore/modalVisible', val);
       },
     },
   },
   methods: {
-    getImageFromArtist(item) {
+    getImageFromArtist(item: any) {
       return item.images && item.images.length > 0 ? item.images[0].url : '';
     },
   },

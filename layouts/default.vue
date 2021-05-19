@@ -23,13 +23,24 @@
     </a-layout>
   </a-layout>
 </template>
-<script>
+<script lang="ts">
 import Vue from 'vue';
 
 export default Vue.extend({
   middleware: 'routes',
-  mounted() {
-    this.$auth.initSession();
+  computed: {
+    isAuthenticated() {
+      return this.$auth.authenticated;
+    },
+  },
+  watch: {
+    isAuthenticated() {
+      if (!this.isAuthenticated) {
+        this.$router.push('/');
+      } else {
+        this.$auth.initSession();
+      }
+    },
   },
 });
 </script>

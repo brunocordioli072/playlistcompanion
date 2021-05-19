@@ -44,23 +44,20 @@ export default Vue.extend({
   methods: {
     async login() {
       try {
+        this.$auth.logout();
         await this.$auth.login();
       } catch (e) {
-        // this.$notification.open({
-        //   message: 'Error on login',
-        //   description: `Some error has occured, please try again or refresh the page...`,
-        //   icon: <a-icon type="monitor" style="color: red" />,
-        // });
+        this.$notification['info']({
+          message: 'Error on login',
+          description: `Some error has occured, please try again or refresh the page...`,
+        });
       }
     },
   },
   computed: {
     isAuthenticated() {
-      return this.$auth.accessToken;
+      return this.$auth.authenticated;
     },
-  },
-  mounted() {
-    this.$spotify.api.getAccessToken();
   },
 });
 </script>
