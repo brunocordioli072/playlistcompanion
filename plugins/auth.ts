@@ -97,8 +97,6 @@ const auth = new (class Auth extends Vue.extend({
       }
     },
     initSession() {
-      console.log( this.expirationDate());
-      
       setTimeout(this.refreshTokens, this.expirationDate());
     },
     async refreshTokens() {
