@@ -72,7 +72,7 @@ const auth = new (class Auth extends Vue.extend({
 
     async login() {
       const {data} = await axios.get(
-          `${process.env.WORKER_URL}/auth/spotify/login`,
+          `${process.env.WORKER_URL}/spotify/login`,
       );
       window.location.href = data;
     },
@@ -86,7 +86,7 @@ const auth = new (class Auth extends Vue.extend({
     },
     async handleAuthentication(code: any) {
       const res = await axios.get(
-          `${process.env.WORKER_URL}/auth/spotify/credentials?code=${code}`,
+          `${process.env.WORKER_URL}/spotify/credentials?code=${code}`,
       );
       const authResult = res.data.body;
       if (authResult && authResult.access_token) {
