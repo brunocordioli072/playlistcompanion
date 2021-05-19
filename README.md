@@ -6,6 +6,10 @@
 
 [PlaylistCompanion](https://brunocordioli072.github.io/playlistcompanion) is your best friend when the subject is music. It helps you see all your favorite musicians and see all the musicians that are related to them! 
 
+## How it works
+
+[PlaylistCompanion](https://brunocordioli072.github.io/playlistcompanion) uses in general two services. One is the [Spotify API](https://developer.spotify.com/documentation/web-api/reference/) used to perform actions in spotify and get the musics/playlists and the other is [companion-worker](https://github.com/brunocordioli072/companion-worker) which is used to provide the app authorization from Spotify.
+
 ## Build Setup
 
 ```bash
