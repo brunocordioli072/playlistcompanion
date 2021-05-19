@@ -1,5 +1,7 @@
 # spotify-explorer
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/997e609005a448d0bfbc604b9c2e590e)](https://app.codacy.com/gh/brunocordioli072/playlistcompanion?utm_source=github.com&utm_medium=referral&utm_content=brunocordioli072/playlistcompanion&utm_campaign=Badge_Grade_Settings)
+
 ## Build Setup
 
 ```bash
