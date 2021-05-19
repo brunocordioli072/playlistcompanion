@@ -17,7 +17,7 @@ export default {
    ** See https://nuxtjs.org/api/configuration-head
    */
   router: {
-    base: '/companion-explorer/',
+    base: '/playlistcompanion/',
   },
   head: {
     htmlAttrs: {
