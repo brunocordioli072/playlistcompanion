@@ -5,7 +5,7 @@
     :value="search"
     size="large"
     placeholder="Search anything related to music :)"
-    style="width: 50vw; min-width: 270px"
+    style="width: 40vw; min-width: 270px"
     :filter-option="false"
     :not-found-content="fetchingArtists ? undefined : null"
     @search="fetchArtists"
@@ -18,7 +18,7 @@
       @click="updateSearchedArtist(item)"
     >
       <a-space direction="horizontal">
-        <a-avatar slot="avatar" :src="getImageFromArtist(item)" />
+        <a-avatar slot="avatar" :size="30" :src="getImageFromArtist(item)" />
         <b style="margin-left: 10px">{{ item.name }}</b>
         <a-tag
           style="margin-left: 5px"

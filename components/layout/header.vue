@@ -14,7 +14,7 @@
         :default-selected-keys="['4']"
         :style="{ lineHeight: '64px' }"
       >
-        <a-menu-item  @click="$router.push('/explore')">explore</a-menu-item>
+        <a-menu-item @click="$router.push('/explore')">explore</a-menu-item>
       </a-menu>
     </a-space>
   </a-layout-header>

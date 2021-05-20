@@ -8,7 +8,7 @@
       <a-card>
         <div slot="title">
           <a-space direction="vertical">
-            <a-avatar slot="avatar" :src="getImageFromArtist(item)" />
+            <a-avatar slot="avatar" :size="60" :src="getImageFromArtist(item)" />
             <div>{{ item.name }}</div>
           </a-space>
         </div>

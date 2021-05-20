@@ -14,7 +14,7 @@
         :style="'margin: 16px 16px'"
       >
         <div
-          :style="{ padding: '20px', background: '#fff', minHeight: '360px' }"
+          :style="{ paddingTop: '20px', background: '#fff', minHeight: '360px' }"
         >
           <Nuxt />
         </div>
@@ -31,6 +31,14 @@ export default Vue.extend({
   computed: {
     isAuthenticated() {
       return this.$auth.authenticated;
+    },
+    collapsed: {
+      get: function() {
+        return this.$store.getters['layout/collapsed'];
+      },
+      set: function(val) {
+        this.$store.commit('layout/collapsed', val);
+      },
     },
   },
   watch: {
