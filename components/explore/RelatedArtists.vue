@@ -1,6 +1,6 @@
 <template>
   <a-table
-    :columns=" relatedArtistsColumns"
+    :columns="width < 1000 ? relatedArtistsColumnsMobile : relatedArtistsColumns"
     :pagination="{ pageSize: 5 }"
     :data-source="relatedArtists"
   >
@@ -90,6 +90,9 @@ export default Vue.extend({
     };
   },
   computed: {
+    width() {
+      return window.innerWidth;
+    },
     relatedArtists: {
       get(): any {
         return this.$store.getters['explore/relatedArtists'];
