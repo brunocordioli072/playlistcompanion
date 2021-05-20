@@ -1,10 +1,10 @@
 <template>
   <div>
     <a-row type="flex" justify="center">
-      <c-search-artist></c-search-artist>
+      <SearchArtist></SearchArtist>
     </a-row>
     <a-row type="flex" justify="center">
-      <c-searched-artists></c-searched-artists>
+      <SearchedArtists></SearchedArtists>
     </a-row>
 
     <a-row type="flex" justify="center" v-if="searchedArtists.length > 0">
@@ -19,7 +19,7 @@
       </span>
     </a-row>
     <a-row :style="{ padding: '30px' }">
-      <c-related-artists></c-related-artists>
+      <RelatedArtists></RelatedArtists>
     </a-row>
     <a-row
       :style="{ padding: '30px' }"
@@ -44,7 +44,7 @@
       </a-row>
       <a-row type="flex" justify="center" :style="{ padding: '30px' }">
         <a-timeline>
-          <c-selected-artists></c-selected-artists>
+          <SelectedArtists></SelectedArtists>
         </a-timeline>
       </a-row>
     </div>
@@ -53,12 +53,12 @@
         <source type="audio/mp3" />
       </audio>
     </vue-plyr>
-    <c-create-playlist></c-create-playlist>
+    <CreatePlaylist></CreatePlaylist>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue from 'vue';
 
 export default Vue.extend({
   computed: {
@@ -74,56 +74,56 @@ export default Vue.extend({
             loop: boolean;
           };
         }).player;
-      }
+      },
     },
     playerIsPlaying: {
       get() {
-        return this.$store.getters["explore/playerIsPlaying"];
+        return this.$store.getters['explore/playerIsPlaying'];
       },
       set: function(val) {
-        this.$store.commit("explore/playerIsPlaying", val);
-      }
+        this.$store.commit('explore/playerIsPlaying', val);
+      },
     },
     playerSource: {
       get() {
-        return this.$store.getters["explore/playerSource"];
+        return this.$store.getters['explore/playerSource'];
       },
       set: function(val) {
-        this.$store.commit("explore/playerSource", val);
-      }
+        this.$store.commit('explore/playerSource', val);
+      },
     },
     searchedArtists: {
       get() {
-        return this.$store.getters["explore/searchedArtists"];
+        return this.$store.getters['explore/searchedArtists'];
       },
       set: function(val) {
-        this.$store.commit("explore/searchedArtists", val);
-      }
+        this.$store.commit('explore/searchedArtists', val);
+      },
     },
     selectedArtists: {
       get: function() {
-        return this.$store.getters["explore/selectedArtists"];
+        return this.$store.getters['explore/selectedArtists'];
       },
       set: function(val) {
-        this.$store.commit("explore/selectedArtists", val);
-      }
+        this.$store.commit('explore/selectedArtists', val);
+      },
     },
     relatedArtists: {
       get: function() {
-        return this.$store.getters["explore/relatedArtists"];
+        return this.$store.getters['explore/relatedArtists'];
       },
       set: function(val) {
-        this.$store.commit("explore/relatedArtists", val);
-      }
+        this.$store.commit('explore/relatedArtists', val);
+      },
     },
     modalVisible: {
       get: function() {
-        return this.$store.getters["explore/modalVisible"];
+        return this.$store.getters['explore/modalVisible'];
       },
       set: function(val) {
-        this.$store.commit("explore/modalVisible", val);
-      }
-    }
+        this.$store.commit('explore/modalVisible', val);
+      },
+    },
   },
   watch: {
     playerIsPlaying() {
@@ -136,13 +136,13 @@ export default Vue.extend({
     },
     playerSource() {
       this.plyr.source = {
-        type: "audio",
-        sources: [{ src: this.playerSource, type: "audio/mp3" }]
+        type: 'audio',
+        sources: [{src: this.playerSource, type: 'audio/mp3'}],
       };
     },
     async searchedArtists() {
       await this.fetchRelatedArtists();
-    }
+    },
   },
   methods: {
     async fetchRelatedArtists() {
@@ -156,15 +156,15 @@ export default Vue.extend({
     },
     updateSearchedArtist(item: any) {
       this.searchedArtists = [item];
-    }
+    },
   },
   async mounted() {
     this.plyr.autoplay = true;
     this.plyr.loop = true;
-    const res = await this.$spotify.api.getArtist("43ZHCT0cAZBISjO8DG9PnE");
+    const res = await this.$spotify.api.getArtist('43ZHCT0cAZBISjO8DG9PnE');
     this.updateSearchedArtist(res.body);
     this.fetchRelatedArtists();
-  }
+  },
 });
 </script>
 

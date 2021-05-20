@@ -42,7 +42,7 @@
         />
       </a-list-item-meta>
       <div style="margin: 5px" slot="actions">
-        <c-actions :search="false" :item="item"></c-actions>
+        <Actions :search="false" :item="item"></Actions>
       </div>
     </a-list-item>
   </a-list>

@@ -25,7 +25,7 @@
       >
     </span>
     <div slot="action" slot-scope="action, item">
-      <c-actions :search="true" :item="item"></c-actions>
+      <Actions :search="true" :item="item"></Actions>
     </div>
   </a-table>
 </template>

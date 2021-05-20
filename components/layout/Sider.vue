@@ -6,7 +6,7 @@
     :width="200"
     collapsible
   >
-    <c-logo style="margin: 10px 0 10px 0" :collapsed="collapsed"></c-logo>
+    <Logo style="margin: 10px 0 10px 0" :collapsed="collapsed"></Logo>
     <a-menu theme="dark" mode="inline">
       <a-menu-item @click="$router.push('/explore')" key="1">
         <a-icon type="compass" />

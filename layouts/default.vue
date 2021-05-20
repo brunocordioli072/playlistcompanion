@@ -1,6 +1,6 @@
 <template>
   <a-layout id="components-layout-demo-side" style="min-height: 100vh">
-    <c-sider></c-sider>
+    <Sider></Sider>
     <a-layout>
       <a-layout-header style="background: #fff; padding: 0">
         <a-button
@@ -19,7 +19,7 @@
           <Nuxt />
         </div>
       </a-layout-content>
-      <c-footer></c-footer>
+      <Footer></Footer>
     </a-layout>
   </a-layout>
 </template>
