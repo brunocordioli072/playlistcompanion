@@ -50,6 +50,9 @@ export default Vue.extend({
       }
     },
   },
+  mounted() {
+    if (window.innerWidth > 1000) this.collapsed = false;
+  },
 });
 </script>
 
