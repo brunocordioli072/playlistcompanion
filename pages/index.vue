@@ -5,7 +5,7 @@
         style="max-width: 800px; width: 80vw; font-size: 16px; margin: 0 420px"
       >
         <h2>Do your own playlist!</h2>
-        <p>
+        <p :style="$app.isMobile ? 'text-align: justify; text-justify: inter-word;' : ''">
           For people who have
           <a target="_blank" href="https://www.spotify.com/">spotify</a>,
           <b>PlaylistCompanion</b> is your best friend when the subject is
