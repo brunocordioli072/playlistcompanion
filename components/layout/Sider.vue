@@ -6,7 +6,10 @@
     :width="200"
     collapsible
   >
-    <Logo style="margin: 10px 0 10px 0" :collapsed="collapsed"></Logo>
+    <Logo
+      :style="{ margin: '10px 0 10px 0', minWidth: '300px' }"
+      :collapsed="collapsed"
+    ></Logo>
     <a-menu theme="dark" mode="inline">
       <a-menu-item @click="$router.push('/explore')" key="1">
         <a-icon type="compass" />

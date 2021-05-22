@@ -1,13 +1,18 @@
 <template>
   <div>
-    <a-row type="flex" justify="center">
+    <a-row :style="{ minWidth: '300px' }" type="flex" justify="center">
       <SearchArtist></SearchArtist>
     </a-row>
-    <a-row type="flex" justify="center">
+    <a-row :style="{ minWidth: '300px' }" type="flex" justify="center">
       <SearchedArtists></SearchedArtists>
     </a-row>
 
-    <a-row type="flex" justify="center" v-if="searchedArtists.length > 0">
+    <a-row
+      :style="{ minWidth: '300px' }"
+      type="flex"
+      justify="center"
+      v-if="searchedArtists.length > 0"
+    >
       <span style="text-align: left">
         <a-icon type="arrow-down" />&nbsp;Artists related to
         <a
@@ -18,7 +23,9 @@
         <a-icon type="arrow-down" />
       </span>
     </a-row>
-    <a-row :style="{ padding: $app.isMobile ? '5px' : '10px' }">
+    <a-row
+      :style="{ padding: $app.isMobile ? '5px' : '10px', minWidth: '300px' }"
+    >
       <RelatedArtists></RelatedArtists>
     </a-row>
     <a-row
