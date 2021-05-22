@@ -11,7 +11,7 @@
         />
       </a-layout-header>
       <a-layout-content
-        :style="'margin: 16px 16px'"
+        :style="$app.isMobile ? '' : 'margin: 16px 16px'"
       >
         <div
           :style="{ paddingTop: '20px', background: '#fff', minHeight: '360px' }"
@@ -51,6 +51,7 @@ export default Vue.extend({
     },
   },
   mounted() {
+    console.log(this.$app.isMobile);
     if (window.innerWidth > 1000) this.collapsed = false;
   },
 });

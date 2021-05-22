@@ -20,17 +20,24 @@
           right above login with your spotify account and give it a try!
         </p>
         <a-space direction="vertical">
-          <a-button
-            v-if="isAuthenticated"
-            size="large"
-            type="primary"
-            id="login"
-            @click="$router.push('/explore')"
-            >Go explore!</a-button
-          >
-          <a-button v-else size="large" type="primary" id="login" @click="login"
-            >login</a-button
-          >
+          <div style="margin: 20px">
+            <a-button
+              v-if="isAuthenticated"
+              size="large"
+              type="primary"
+              id="login"
+              @click="$router.push('/explore')"
+              >Go explore!</a-button
+            >
+            <a-button
+              v-else
+              size="large"
+              type="primary"
+              id="login"
+              @click="login"
+              >login</a-button
+            >
+          </div>
         </a-space>
       </div>
     </a-space>
@@ -38,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import Vue from "vue";
 
 export default Vue.extend({
   methods: {
@@ -47,18 +54,18 @@ export default Vue.extend({
         this.$auth.logout();
         await this.$auth.login();
       } catch (e) {
-        this.$notification['info']({
-          message: 'Error on login',
-          description: `Some error has occured, please try again or refresh the page...`,
+        this.$notification["info"]({
+          message: "Error on login",
+          description: `Some error has occured, please try again or refresh the page...`
         });
       }
-    },
+    }
   },
   computed: {
     isAuthenticated() {
       return this.$auth.authenticated;
-    },
-  },
+    }
+  }
 });
 </script>
 

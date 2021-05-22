@@ -18,7 +18,7 @@
         <a-icon type="arrow-down" />
       </span>
     </a-row>
-    <a-row :style="{ padding: '10px' }">
+    <a-row :style="{ padding: $app.isMobile ? '5px' : '10px' }">
       <RelatedArtists></RelatedArtists>
     </a-row>
     <a-row

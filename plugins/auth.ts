@@ -72,7 +72,7 @@ const auth = new (class Auth extends Vue.extend({
 
     async login() {
       const {data} = await axios.get(
-          `${process.env.WORKER_URL}/spotify/login`,
+          `${process.env.WORKER_URL}/spotify/login?redirect_uri=${window.location.origin}${window.location.pathname}`,
       );
       window.location.href = data;
     },

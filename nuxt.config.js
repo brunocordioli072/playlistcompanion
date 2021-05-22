@@ -51,7 +51,13 @@ export default {
    ** Plugins to load before mounting the App
    ** https://nuxtjs.org/guide/plugins
    */
-  plugins: ['@/plugins/antd-ui', '@/plugins/main', '@/plugins/auth', '@/plugins/spotify-api'],
+  plugins: [
+    '@/plugins/antd-ui',
+    '@/plugins/main',
+    '@/plugins/auth',
+    '@/plugins/spotify-api',
+    '@/plugins/window-helper',
+  ],
   /*
    ** Auto import components
    ** See https://nuxtjs.org/api/configuration-components
@@ -60,7 +66,11 @@ export default {
   /*
    ** Nuxt.js dev-modules
    */
-  buildModules: ['@nuxtjs/google-analytics', '@nuxtjs/dotenv', '@nuxt/typescript-build'],
+  buildModules: [
+    '@nuxtjs/google-analytics',
+    '@nuxtjs/dotenv',
+    '@nuxt/typescript-build',
+  ],
   googleAnalytics: {
     id: 'UA-178423300-1',
     debug: {
