@@ -8,36 +8,6 @@ const auth = new (class Auth extends Vue.extend({
     authenticated: false,
   }),
   computed: {
-    accessToken: {
-      get() {
-        return localStorage.getItem('access_token') || '';
-      },
-      set(accessToken: string) {
-        localStorage.setItem('access_token', accessToken);
-      },
-    },
-    expiresAt: {
-      get() {
-        return parseInt(localStorage.getItem('expires_at') || '');
-      },
-      set(expiresIn: number) {
-        const expiresAt = JSON.stringify(
-            expiresIn * 1000 + new Date().getTime(),
-        );
-        localStorage.setItem('expires_at', expiresAt);
-      },
-    },
-    vuexExpiresAt: {
-      get() {
-        return parseInt(sessionStorage.getItem('vuex_expires_at') || '');
-      },
-      set(expiresIn: number) {
-        const expiresAt = JSON.stringify(
-            expiresIn * 1000 + new Date().getTime(),
-        );
-        sessionStorage.setItem('vuex_expires_at', expiresAt);
-      },
-    },
   },
   watch: {
     'window.location.search': {
@@ -61,13 +31,37 @@ const auth = new (class Auth extends Vue.extend({
     },
   },
   methods: {
+    getAccessToken() {
+      return localStorage.getItem('access_token') || '';
+    },
+    setAccessToken(accessToken: string) {
+      localStorage.setItem('access_token', accessToken);
+    },
+    getExpiresAt() {
+      return parseInt(localStorage.getItem('expires_at') || '');
+    },
+    setExpiresAt(expiresIn: number) {
+      const expiresAt = JSON.stringify(
+          expiresIn * 1000 + new Date().getTime(),
+      );
+      localStorage.setItem('expires_at', expiresAt);
+    },
+    getVuexExpiresAt() {
+      return parseInt(sessionStorage.getItem('vuex_expires_at') || '');
+    },
+    setVuexExpiresAt(expiresIn: number) {
+      const expiresAt = JSON.stringify(
+          expiresIn * 1000 + new Date().getTime(),
+      );
+      sessionStorage.setItem('vuex_expires_at', expiresAt);
+    },
     async checkVuex() {
-      if (this.vuexExpiresAt <= new Date().getTime()) {
-        this.vuexExpiresAt = 24 * 60;
+      if (this.getVuexExpiresAt() <= new Date().getTime()) {
+        this.setVuexExpiresAt(24 * 60);
       }
     },
     expirationDate() {
-      return this.expiresAt - +moment();
+      return this.getExpiresAt() - +moment();
     },
 
     async login() {
@@ -82,7 +76,7 @@ const auth = new (class Auth extends Vue.extend({
       sessionStorage.removeItem('vuex_expires_at');
     },
     isAuthenticated() {
-      return new Date().getTime() < this.expiresAt || 0;
+      return new Date().getTime() < this.getExpiresAt() || 0;
     },
     async handleAuthentication(code: any) {
       const res = await axios.get(
@@ -90,19 +84,21 @@ const auth = new (class Auth extends Vue.extend({
       );
       const authResult = res.data.body;
       if (authResult && authResult.access_token) {
-        this.expiresAt = authResult.expires_in;
-        this.vuexExpiresAt = 24 * 60;
-        this.accessToken = authResult.access_token;
+        this.setExpiresAt(authResult.expires_in || 1);
+        this.setVuexExpiresAt(24 * 60);
+        this.setAccessToken(authResult.access_token);
         this.authenticated = true;
       }
     },
     initSession() {
-      setTimeout(this.refreshTokens, this.expirationDate() || 30000);
+      if (this.isAuthenticated()) this.authenticated = true;
+      setTimeout(this.refreshTokens, this.expirationDate() || 5000);
     },
     async refreshTokens() {
-      if (true) {
+      if (!this.isAuthenticated()) {
         this.authenticated = false;
       }
+      setTimeout(this.refreshTokens, this.expirationDate() || 30000);
     },
   },
 }) {})();

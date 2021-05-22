@@ -29,9 +29,6 @@ import Vue from 'vue';
 export default Vue.extend({
   middleware: 'routes',
   computed: {
-    isAuthenticated() {
-      return this.$auth.authenticated;
-    },
     collapsed: {
       get: function() {
         return this.$store.getters['layout/collapsed'];
@@ -41,17 +38,13 @@ export default Vue.extend({
       },
     },
   },
-  watch: {
-    isAuthenticated() {
-      if (!this.isAuthenticated) {
-        this.$router.push('/');
-      } else {
-        this.$auth.initSession();
-      }
-    },
-  },
   mounted() {
     if (window.innerWidth > 1000) this.collapsed = false;
+    if (!this.$auth.isAuthenticated() && !this.$route.query.code) {
+      this.$router.push('/');
+    } else {
+      this.$auth.initSession();
+    }
   },
 });
 </script>
