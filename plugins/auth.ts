@@ -42,7 +42,6 @@ const auth = new (class Auth extends Vue.extend({
   watch: {
     'window.location.search': {
       async handler() {
-        console.log('to aqui');
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('code')) {
           await this.handleAuthentication(urlParams.get('code'));
@@ -87,7 +86,7 @@ const auth = new (class Auth extends Vue.extend({
     },
     async handleAuthentication(code: any) {
       const res = await axios.get(
-          `${process.env.WORKER_URL}/spotify/credentials?code=${code}`,
+          `${process.env.WORKER_URL}/spotify/credentials?code=${code}&redirect_uri=${window.location.origin}${window.location.pathname}`,
       );
       const authResult = res.data.body;
       if (authResult && authResult.access_token) {

@@ -62,7 +62,6 @@ export default Vue.extend({
     },
   },
   mounted() {
-    console.log(this.$auth.isAuthenticated(), this.$auth.authenticated);
     if (this.$auth.isAuthenticated()) this.$auth.authenticated = true;
   },
   computed: {
