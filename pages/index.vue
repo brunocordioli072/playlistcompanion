@@ -16,8 +16,8 @@
           </b>
           And based on your choices it creates a playlist with the musics of the
           musicians you chose.
-          <b>Its pretty awesome!</b> You just have to click on the login button
-          right above login with your spotify account and give it a try!
+          <b>Its pretty awesome!</b> You just have to click on the Sign In button
+          right above, sign in with your spotify account and give it a try!
         </p>
         <a-space direction="vertical">
           <div style="margin: 20px">
@@ -48,22 +48,6 @@
 import Vue from 'vue';
 
 export default Vue.extend({
-  methods: {
-    async login() {
-      try {
-        this.$auth.logout();
-        await this.$auth.login();
-      } catch (e) {
-        this.$notification['info']({
-          message: 'Error on login',
-          description: `Some error has occured, please try again or refresh the page...`,
-        });
-      }
-    },
-  },
-  mounted() {
-    if (this.$auth.isAuthenticated()) this.$auth.authenticated = true;
-  },
   computed: {
     authenticated() {
       return this.$auth.authenticated;
@@ -75,6 +59,19 @@ export default Vue.extend({
         if (this.authenticated && this.$route.query.code) this.$router.push('/explore');
       },
       immediate: true,
+    },
+  },
+  methods: {
+    async login() {
+      try {
+        this.$auth.logout();
+        await this.$auth.login();
+      } catch (e) {
+        this.$notification['info']({
+          message: 'Error on login',
+          description: `Some error has occured, please try again or refresh the page...`,
+        });
+      }
     },
   },
 });

@@ -10,9 +10,25 @@
     <a-input v-model="playlistName" placeholder="Name of your playlist" />
     <p style="text-align: justify">
       This playlist will be added to
-      <b>your spotify account</b> with the <b>10</b> top tracks of
-      <b>each artist</b> you selected!
+      <b>your spotify account</b> with the <b>{{ playlistSize }}</b> top tracks
+      of <b>each artist</b> you selected, with
+      <b>{{ playlistVisibility }}</b> visibility and with the description
+      "<b>{{ playlistDescription }}</b>"
     </p>
+    <a @click="advanced = !advanced">See playlist advanced properties</a>
+    <a-timeline style="margin-top: 20px" v-if="advanced">
+      <CreatePlaylistTimeLineItem
+        :property.sync="playlistDescription"
+        description="Playlist Description"
+        icon="highlight"
+      ></CreatePlaylistTimeLineItem>
+      <CreatePlaylistTimeLineItem
+        :property.sync="playlistVisibility"
+        description="Playlist Visibility"
+        :radioGroup="['private', 'public']"
+        icon="eye"
+      ></CreatePlaylistTimeLineItem>
+    </a-timeline>
   </a-modal>
 </template>
 
@@ -23,6 +39,10 @@ export default Vue.extend({
   data() {
     return {
       playlistName: '',
+      playlistSize: 10,
+      playlistDescription: '❤️ Playlist created with PlaylistCompanion ❤️',
+      playlistVisibility: 'private',
+      advanced: true,
     };
   },
   computed: {
@@ -66,7 +86,8 @@ export default Vue.extend({
       this.creatingPlaylist = true;
       try {
         const res = await this.$spotify.api.createPlaylist(this.playlistName, {
-          public: false,
+          public: this.playlistVisibility === 'public',
+          description: this.playlistDescription,
         });
         const playlist = res.body;
         try {

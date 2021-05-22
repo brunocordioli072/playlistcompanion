@@ -24,6 +24,7 @@
       </span>
     </a-row>
     <a-row
+      v-if="relatedArtists.length > 0"
       :style="{ padding: $app.isMobile ? '5px' : '10px', minWidth: '300px' }"
     >
       <RelatedArtists></RelatedArtists>
@@ -49,10 +50,8 @@
           <a-icon type="arrow-down" />
         </span>
       </a-row>
-      <a-row type="flex" justify="center" :style="{ padding: '30px' }">
-        <a-timeline>
-          <SelectedArtists></SelectedArtists>
-        </a-timeline>
+      <a-row type="flex" justify="center" :style="{ padding: '15px' }">
+        <SelectedArtists></SelectedArtists>
       </a-row>
     </div>
     <vue-plyr ref="plyr" style="display: none; visibility: hidden">
