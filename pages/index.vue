@@ -22,7 +22,7 @@
         <a-space direction="vertical">
           <div style="margin: 20px">
             <a-button
-              v-if="isAuthenticated"
+              v-if="authenticated"
               size="large"
               type="primary"
               id="login"
@@ -35,7 +35,7 @@
               type="primary"
               id="login"
               @click="login"
-              >login</a-button
+              >Sign In</a-button
             >
           </div>
         </a-space>
@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue from 'vue';
 
 export default Vue.extend({
   methods: {
@@ -54,18 +54,30 @@ export default Vue.extend({
         this.$auth.logout();
         await this.$auth.login();
       } catch (e) {
-        this.$notification["info"]({
-          message: "Error on login",
-          description: `Some error has occured, please try again or refresh the page...`
+        this.$notification['info']({
+          message: 'Error on login',
+          description: `Some error has occured, please try again or refresh the page...`,
         });
       }
-    }
+    },
+  },
+  mounted() {
+    console.log(this.$auth.isAuthenticated(), this.$auth.authenticated);
+    if (this.$auth.isAuthenticated()) this.$auth.authenticated = true;
   },
   computed: {
-    isAuthenticated() {
+    authenticated() {
       return this.$auth.authenticated;
-    }
-  }
+    },
+  },
+  watch: {
+    authenticated: {
+      handler() {
+        if (this.authenticated && this.$route.query.code) this.$router.push('/explore');
+      },
+      immediate: true,
+    },
+  },
 });
 </script>
 

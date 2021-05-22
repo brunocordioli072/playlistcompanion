@@ -51,7 +51,6 @@ export default Vue.extend({
     },
   },
   mounted() {
-    console.log(this.$app.isMobile);
     if (window.innerWidth > 1000) this.collapsed = false;
   },
 });

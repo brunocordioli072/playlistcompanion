@@ -1,7 +1,7 @@
 <template>
   <a-table
     :columns="$app.isMobile ? relatedArtistsColumnsMobile : relatedArtistsColumns"
-    :size="$app.isMobile ? 'small' : ''"
+    :size="$app.isMobile ? 'small' : 'large'"
     :pagination="{ pageSize: 5 }"
     :data-source="relatedArtists"
   >

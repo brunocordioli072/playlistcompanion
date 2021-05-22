@@ -42,6 +42,7 @@ const auth = new (class Auth extends Vue.extend({
   watch: {
     'window.location.search': {
       async handler() {
+        console.log('to aqui');
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('code')) {
           await this.handleAuthentication(urlParams.get('code'));
@@ -97,7 +98,7 @@ const auth = new (class Auth extends Vue.extend({
       }
     },
     initSession() {
-      setTimeout(this.refreshTokens, this.expirationDate());
+      setTimeout(this.refreshTokens, this.expirationDate() || 30000);
     },
     async refreshTokens() {
       if (true) {

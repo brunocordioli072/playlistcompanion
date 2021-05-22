@@ -5,7 +5,6 @@ import {Middleware} from '@nuxt/types';
 const routes: Middleware = ({redirect, route}) => {
   const expiresAt = localStorage.getItem('expires_at') as unknown as number;
   const authenticated = expiresAt >= +moment();
-  console.log(route);
   if (!authenticated && route.path != '/') {
     return redirect('/');
   }

@@ -112,11 +112,6 @@ export default Vue.extend({
       return this.selectedArtistsNames.includes(this.item.name);
     },
   },
-  watch: {
-    playerIsLoading() {
-      console.log(this.playerIsLoading);
-    },
-  },
   methods: {
     async playTopTrackByArtist(item: any) {
       this.playerIsPlaying = false;

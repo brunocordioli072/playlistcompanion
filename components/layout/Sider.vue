@@ -11,7 +11,7 @@
       :collapsed="collapsed"
     ></Logo>
     <a-menu theme="dark" mode="inline">
-      <a-menu-item @click="$router.push('/explore')" key="1">
+      <a-menu-item :disabled="!$auth.authenticated" @click="$router.push('/explore')" key="1">
         <a-icon type="compass" />
         <span>Explore</span>
       </a-menu-item>
