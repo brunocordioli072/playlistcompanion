@@ -54,8 +54,8 @@ export default {
   plugins: [
     '@/plugins/antd-ui',
     '@/plugins/main',
-    '@/plugins/auth',
     '@/plugins/spotify-api',
+    '@/plugins/auth',
     '@/plugins/window-helper',
   ],
   /*
